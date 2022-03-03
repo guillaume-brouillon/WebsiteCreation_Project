@@ -1,17 +1,21 @@
 <script>
 	import { page } from '$app/stores';
 	import logo from './Logo_essec_simple.svg';
+	
 </script>
 
 <header>
 
 	<nav class="top: 0px w-full h-16">
-		<img
-		id="logoseul"
-		class="h-auto hidden"
-		src={logo}
-		alt="Logo Essec"
-		 />
+		<button class="w-12" on:click="">
+			<img
+			id="logoseul"
+			class="h-auto hidden"
+			src={logo}
+			alt="Logo Essec"
+			 />
+		</button>
+		
 		<div id="LogoContainer" class="w-500">	
 			<img
 			id="logo"
@@ -84,20 +88,14 @@
 	}
 	@media(max-width: 500px)
 	{
-		#logo{
+		li:not(.active)
+		{
 			display: none;
 		}
-		h1{
-			display: none;
-		}
-#logoseul
-{
-	display: flex;
+	}
+path {
+	fill: var(--background);
 }
-	}
-	path {
-		fill: var(--background);
-	}
 #logo, #logoseul{
 	padding: 0.4rem;
 }
