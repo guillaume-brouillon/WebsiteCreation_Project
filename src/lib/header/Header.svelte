@@ -1,36 +1,48 @@
 <script>
 	import { page } from '$app/stores';
-	import logo from './svelte-logo.svg';
+	import logo from './Logo_essec_simple.svg';
 </script>
 
 <header>
-	<div class="corner">
-		<a href="https://kit.svelte.dev">
-			<img src={logo} alt="SvelteKit" />
-		</a>
-	</div>
 
-	<nav>
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
-		</svg>
-		<ul>
+	<nav class="top: 0px w-full h-16">
+		<img
+		id="logoseul"
+		class="h-auto hidden"
+		src={logo}
+		alt="Logo Essec"
+		 />
+		<div id="LogoContainer" class="w-500">	
+			<img
+			id="logo"
+			class="h-auto"
+			src={logo}
+			alt="Logo Essec"
+			 />
+				<h1 class="h-auto">
+					My Classes
+				</h1>
+		</div>	
+		<ul class="">
 			<li class:active={$page.url.pathname === '/'}><a sveltekit:prefetch href="/">Home</a></li>
-			<li class:active={$page.url.pathname === '/about'}>
-				<a sveltekit:prefetch href="/about">About</a>
+			<li class:active={$page.url.pathname === '/summary'}>
+				<a sveltekit:prefetch href="/summary">My Summary</a>
 			</li>
-			<li class:active={$page.url.pathname === '/todos'}>
-				<a sveltekit:prefetch href="/todos">Todos</a>
+			<li class:active={$page.url.pathname === '/choose'}>
+				<a sveltekit:prefetch href="/choose">Choose your classes</a>
+			</li>
+			<li class:active={$page.url.pathname === '/exploreclasses'}>
+				<a sveltekit:prefetch href="/exploreclasses">Explore Classes</a>
+			</li>
+			<li class:active={$page.url.pathname === '/exploretracks'}>
+				<a sveltekit:prefetch href="/exploretracks">Explore Tracks</a>
+			</li>
+			<li class:active={$page.url.pathname === '/contactus'}>
+				<a sveltekit:prefetch href="/contactus">Contact Us</a>
 			</li>
 		</ul>
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
-		</svg>
 	</nav>
 
-	<div class="corner">
-		<!-- TODO put something else here? github link? -->
-	</div>
 </header>
 
 <style>
@@ -38,53 +50,65 @@
 		display: flex;
 		justify-content: space-between;
 	}
-
-	.corner {
-		width: 3em;
-		height: 3em;
+	h1{
+		margin-left: 10px;
+		margin-right: 2rem;
+		font-size: 1rem;
+		text-align: center;
+		position: relative;
+		top: 30%;
+		  color: var(--accent-color);
+		  white-space: nowrap;
+		  width: fit-content;
 	}
 
-	.corner a {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 100%;
-		height: 100%;
-	}
-
-	.corner img {
-		width: 2em;
-		height: 2em;
-		object-fit: contain;
-	}
 
 	nav {
 		display: flex;
 		justify-content: center;
-		--background: rgba(255, 255, 255, 0.7);
+		--background: rgba(60, 100, 177, 0.06);
+		background: var(--background);
 	}
-
-	svg {
-		width: 2em;
-		height: 3em;
-		display: block;
+	@media(max-width: 900px)
+	{
+		#logo{
+			display: none;
+		}
+		h1{
+			display: none;
+		}
+#logoseul
+{
+	display: flex;
+}
 	}
-
+	@media(max-width: 500px)
+	{
+		#logo{
+			display: none;
+		}
+		h1{
+			display: none;
+		}
+#logoseul
+{
+	display: flex;
+}
+	}
 	path {
 		fill: var(--background);
 	}
-
-	ul {
-		position: relative;
-		padding: 0;
-		margin: 0;
-		height: 3em;
+#logo, #logoseul{
+	padding: 0.4rem;
+}
+#LogoContainer{
 		display: flex;
-		justify-content: center;
+}
+	ul {
+		display: flex;
 		align-items: center;
-		list-style: none;
-		background: var(--background);
-		background-size: contain;
+		padding: 10px;	
+		vertical-align:auto;	
 	}
 
 	li {
@@ -92,16 +116,8 @@
 		height: 100%;
 	}
 
-	li.active::before {
-		--size: 6px;
-		content: '';
-		width: 0;
-		height: 0;
-		position: absolute;
-		top: 0;
-		left: calc(50% - var(--size));
-		border: var(--size) solid transparent;
-		border-top: var(--size) solid var(--accent-color);
+	li.active a {
+		color: var(--accent-color);
 	}
 
 	nav a {
@@ -110,10 +126,10 @@
 		align-items: center;
 		padding: 0 1em;
 		color: var(--heading-color);
-		font-weight: 700;
+		font-weight: normal;
 		font-size: 0.8rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
+	font-style: normal;
+	letter-spacing: 0.2px;
 		text-decoration: none;
 		transition: color 0.2s linear;
 	}
