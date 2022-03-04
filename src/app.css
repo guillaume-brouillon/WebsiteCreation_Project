@@ -8,9 +8,9 @@
 		Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 	--font-mono: 'Fira Mono', monospace;
 	--pure-white: #ffffff;
-	--primary-color: rgba(60, 100, 177, 1);
+	--primary-color: rgba(242, 246, 254, 1);
 	--secondary-color: #d0dde9;
-	--tertiary-color: #edf0f8;
+	--tertiary-color: rgb(96, 136, 209);
 	--accent-color: rgba(60, 100, 177, 1);
 	--heading-color: rgba(0, 0, 0, 0.7);
 	--text-color: #444444;
@@ -18,13 +18,16 @@
 	--column-width: 42rem;
 	--column-margin-top: 4rem;
 }
-
+*
+{	
+font-family: Mulish;
+}
 body {
 	min-height: 100vh;
 	margin: 0;
 	background-color: var(--pure-white);
 }
-
+/*
 body::before {
 	content: '';
 	width: 80vw;
@@ -40,7 +43,7 @@ body::before {
 	);
 	opacity: 0.05;
 }
-
+*/
 #svelte {
 	min-height: 100vh;
 	display: flex;
