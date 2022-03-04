@@ -1,13 +1,12 @@
 <script>
 	import { page } from '$app/stores';
-	import logo from './Logo_essec_simple.svg';
+	import logo from '../../../static/icon/edu.png';
 	
 </script>
 
 <header>
-
 	<nav class="top: 0px w-full h-16">
-		<button class="w-12" on:click="">
+		<button class="w-12">
 			<img
 			id="logoseul"
 			class="h-auto hidden"
@@ -17,18 +16,10 @@
 		</button>
 		
 		<div id="LogoContainer" class="w-500">	
-			<img
-			id="logo"
-			class="h-auto"
-			src={logo}
-			alt="Logo Essec"
-			 />
-				<h1 class="h-auto">
-					My Classes
-				</h1>
+			<img id="logo" class="h-auto" src={logo} alt="Logo of the website"/>
+			<h1 class="h-auto"> My ESSEC Classes</h1>
 		</div>	
-		<ul class="">
-			<li class:active={$page.url.pathname === '/'}><a sveltekit:prefetch href="/">Home</a></li>
+		<ul>
 			<li class:active={$page.url.pathname === '/summary'}>
 				<a sveltekit:prefetch href="/summary">My Summary</a>
 			</li>
@@ -41,12 +32,9 @@
 			<li class:active={$page.url.pathname === '/exploretracks'}>
 				<a sveltekit:prefetch href="/exploretracks">Explore Tracks</a>
 			</li>
-			<li class:active={$page.url.pathname === '/contactus'}>
-				<a sveltekit:prefetch href="/contactus">Contact Us</a>
-			</li>
+
 		</ul>
 	</nav>
-
 </header>
 
 <style>

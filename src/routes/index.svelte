@@ -1,14 +1,19 @@
 <script context="module">
 	export const prerender = true;
+
 </script>
 
 <script>
-	import Counter from '$lib/Counter.svelte';
+	import Navbar from '$lib/navbar/Navbar.svelte';
 </script>
 
 <svelte:head>
-	<title>Home</title>
+	<title>My ESSEC classes</title>
 </svelte:head>
+
+<header>
+	<Navbar />
+</header>
 
 <section>
 
