@@ -1,28 +1,10 @@
 <script>
-<<<<<<< HEAD
 	import { page } from '$app/stores';
 	import logo from '../../../static/icon/edu.png';
 	
 </script>
 
-<header>
-	<nav class="top: 0px w-full h-16">
-		<button class="w-12">
-			<img
-			id="logoseul"
-			class="h-auto hidden"
-			src={logo}
-			alt="Logo Essec"
-			 />
-		</button>
-		
-		<div id="LogoContainer" class="w-500">	
-			<img id="logo" class="h-auto" src={logo} alt="Logo of the website"/>
-			<h1 class="h-auto"> My ESSEC Classes</h1>
-		</div>	
-		<ul>
-			<li class:active={$page.url.pathname === '/summary'}>
-=======
+
 	import { page } from "$app/stores";
 	import logo from "./Logo_essec_simple.svg";
 	import jQuery from "jquery";
@@ -31,7 +13,7 @@
 	let navigation_open = false;
 
 	var waitForFinalEvent = (function () {
-		var timers = {};
+		let timers = {};
 		return function (callback, ms, uniqueId) {
 			if (!uniqueId) {
 				uniqueId = "Don't call this twice without a uniqueId";
@@ -80,6 +62,7 @@
 </script>
 
 <header>
+	
 	<nav class="top: 0px w-full h-16" id="navbar">
 		<img id="logoseulsimple" class="h-auto" src={logo} alt="Logo Essec" />
 		<button class="w-12" on:click={reveal_nav_pannel} id="logoseul">
@@ -98,7 +81,6 @@
 				>
 			</li>
 			<li class:active={$page.url.pathname === "/summary"}>
->>>>>>> 780cf5db1cb49ca777fd2408bd53b49f32dad579
 				<a sveltekit:prefetch href="/summary">My Summary</a>
 				<a sveltekit:prefetch href="/choose" class="filler"
 					>Choose your classes</a
@@ -119,16 +101,13 @@
 					>Choose your classes</a
 				>
 			</li>
-<<<<<<< HEAD
 
-=======
 			<li class:active={$page.url.pathname === "/contactus"}>
 				<a sveltekit:prefetch href="/contactus">Contact Us</a>
 				<a sveltekit:prefetch href="/choose" class="filler"
 					>Choose your classes</a
 				>
 			</li>
->>>>>>> 780cf5db1cb49ca777fd2408bd53b49f32dad579
 		</ul>
 	</nav>
 </header>

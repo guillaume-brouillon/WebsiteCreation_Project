@@ -1,10 +1,5 @@
 <script context="module">
 	export const prerender = true;
-<<<<<<< HEAD
-
-=======
-	import happy_img from "./websitestudent.svg";
->>>>>>> 780cf5db1cb49ca777fd2408bd53b49f32dad579
 </script>
 
 <script>
@@ -15,17 +10,15 @@
 	<title>My ESSEC classes</title>
 </svelte:head>
 
-<<<<<<< HEAD
+
 <header>
 	<Navbar />
 </header>
 
-<section>
-=======
 <main>
 <div id="container1">
 		
-	<img src="{happy_img}" alt="happy student" class="align-middle m-10"/>
+	<img src="" alt="happy student" class="align-middle m-10"/>
 	<div class="m-10">
 		<h2>
 			We Help you choose your classes at Essec
