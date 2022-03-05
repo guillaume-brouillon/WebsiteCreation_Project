@@ -15,7 +15,7 @@
 	<Navbar />
 </header>
 
-<main>
+<main style="background-color: red;">
 <div id="container1">
 		
 	<img src="" alt="happy student" class="align-middle m-10"/>
