@@ -4,6 +4,7 @@
 	import jQuery from "jquery";
 
     import './Navbar.css';
+	import GButton from "$lib/navbar/googlebutton.svelte";
     import {clickOutside} from './click_outside.js';
     let current_form = 'none';
     let menu_close = true;
@@ -13,6 +14,7 @@
     let register_type_pwd = 'password';
     let login_type_pwd = 'password';
     let register_type_conf_pwd = 'password';
+
 
     const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{4,20}$/;
     const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,20}$/;
@@ -56,6 +58,7 @@
   let mdp;
 
   const handleLogin = async () => {
+      alert('error')
     try {
       loading = false
       const { error } = await supabase.auth.signIn({ email: mail, password:  password.value})
@@ -85,9 +88,15 @@
       jQuery('#continue-button').html('Continue');
     }
   }
+
+
+
+  
+
 </script>
 
 <body>
+    
     <div class="navbar">
         <div class="navbar-links">
             <a class="navbar-logo" href="/">
@@ -153,6 +162,7 @@
                 <div class="form-input-error-message"></div>
             </div>
             <button class="form-button" type="submit" disabled={loading}>Continue</button>
+                <GButton/>
             <p class="form-text">
                 <a href="#" class="form-link" on:click="{()=>console.log(document)}">
                     Forgot password
