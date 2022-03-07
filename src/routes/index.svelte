@@ -4,6 +4,7 @@
 
 <script>
 	import Navbar from '$lib/navbar/Navbar.svelte';
+	import happystudent from "./websitestudent.svg"
 </script>
 
 <svelte:head>
@@ -15,10 +16,10 @@
 	<Navbar />
 </header>
 
-<main style="background-color: red;">
+<main>
 <div id="container1">
 		
-	<img src="" alt="happy student" class="align-middle m-10"/>
+	<img src="{happystudent}" alt="happy student" class="align-middle m-10"/>
 	<div class="m-10">
 		<h2>
 			We Help you choose your classes at Essec
