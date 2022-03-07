@@ -32,7 +32,7 @@
         }
     }
 
-    function clearAllInputError(form) {
+    export function clearAllInputError(form) {
         current_form = form;
         document.querySelectorAll(".form-input").forEach(inputElement => {
             clearInputError(inputElement);
@@ -58,7 +58,6 @@
   const handleLogin = async () => {
     try {
       loading = false
-      alert(mail)
       const { error } = await supabase.auth.signIn({ email: mail, password:  password.value})
       window.location.href = '/summary';
       if (error) throw error
@@ -73,8 +72,6 @@
   const handleSignUp = async () => {
     try {
       loading = false
-      jQuery('#continue-button').html('loading');
-      alert(password.value);
       const { user, session, error } = await supabase.auth.signUp({ email: mail, password:  password.value})
       
       window.location.href = '/summary';

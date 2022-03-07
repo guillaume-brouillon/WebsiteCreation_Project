@@ -7,8 +7,15 @@
 	import happystudent from "./websitestudent.svg";
 
 	import {supabase} from "../supabaseClient"
-
+	let navbarcomponent;
 let loading = false
+let LaunchCreateAccount;
+	import { onMount } from "svelte";
+onMount(function(){
+		LaunchCreateAccount = function(){
+			navbarcomponent.clearAllInputError('register');
+		}
+	});
 </script>
 
 <svelte:head>
@@ -16,7 +23,7 @@ let loading = false
 </svelte:head>
 
 <header>
-	<Navbar />
+	<Navbar bind:this={navbarcomponent}/>
 </header>
 
 <main>
@@ -38,7 +45,7 @@ let loading = false
 				pdf file to the other. My Essec classes
 			</p>
 
-			<button> Start </button>
+			<button on:click="{LaunchCreateAccount}"> Start </button>
 		</div>
 	</div>
 </main>
