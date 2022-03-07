@@ -1,15 +1,12 @@
 <script>
 	import { page } from '$app/stores';
-	import logo from '../../../static/icon/edu.png';
-	
-</script>
-
-
-	import { page } from "$app/stores";
 	import logo from "./Logo_essec_simple.svg";
+	
+
+
 	import jQuery from "jquery";
 	import { onMount } from "svelte";
-	//window.$ = window.jQuery = jQuery;
+	//window.$ = window.jQuery = jQuery; '../../../static/icon/edu.png'
 	let navigation_open = false;
 
 	var waitForFinalEvent = (function () {

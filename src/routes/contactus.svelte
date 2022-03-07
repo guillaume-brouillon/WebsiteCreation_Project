@@ -7,9 +7,7 @@
 </svelte:head>
 
 <div class="content">
-<<<<<<< HEAD
 	<h1>About this app</h1>
-=======
 	<h1>Contact Us</h1>
 	<p>
 		This is a <a href="https://kit.svelte.dev">SvelteKit</a> app. You can make your own by typing the
@@ -29,7 +27,6 @@
 		The <a href="/todos">TODOs</a> page illustrates SvelteKit's data loading and form handling. Try using
 		it with JavaScript disabled!
 	</p>
->>>>>>> 780cf5db1cb49ca777fd2408bd53b49f32dad579
 </div>
 
 <style>

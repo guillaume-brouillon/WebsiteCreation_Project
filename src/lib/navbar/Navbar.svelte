@@ -1,6 +1,7 @@
 <script>
     import { page } from '$app/stores';
 
+	import jQuery from "jquery";
 
     import './Navbar.css';
     import {clickOutside} from './click_outside.js';
@@ -49,6 +50,26 @@
         inputElement.parentElement.parentElement.querySelector(".form-input-error-message").textContent= "";
     }
 
+	import { supabase } from "../../supabaseClient";
+	let loading = false
+  let mail;
+  let mdp;
+
+  const handleLogin = async () => {
+    try {
+      loading = false
+      alert(email)
+      const { error } = await supabase.auth.signIn({ email: mail, password:  mdp})
+      window.location.href = '/summary';
+      if (error) throw error
+      alert('Check your email for the login link!')
+    } catch (error) {
+      alert(error.error_description || error.message)
+    }
+     finally {
+      loading = true
+    }
+  }
 </script>
 
 <body>
@@ -90,7 +111,7 @@
     </div>
 
     <div class="{current_form === 'none' ? "container form-hidden" : "container" }" id="container">
-        <form class="{current_form === 'login' ? "form" : "form form-hidden" }" id="login">
+        <form class="{current_form === 'login' ? "form" : "form form-hidden" }" id="login"  on:submit|preventDefault={handleLogin}>
             <h1 class="form-title">Login</h1>
             <div class="form-head">
                 <img src="./icon/cross.png" alt= "closing form" class ="close_form" on:click="{() => clearAllInputError('none')}">
@@ -100,14 +121,15 @@
             <div class="form-input-group">
                 <div class="form-input-group-icon">
                     <img class="form-input-icon" src="./icon/id.png" alt="ID icon">
-                    <input type="text" id="user" class="form-input" autofocus placeholder="Username or email" on:blur="{(event) => verify_input(event)}" on:input="{(event) => clearInputError(event.target)}">
+                    <input type="text" id="user" class="form-input" autofocus placeholder="Username or email" on:blur="{(event) => verify_input(event)}" on:input="{(event) => clearInputError(event.target)}" bind:value={mail}>
                 </div>
                 <div class="form-input-error-message"></div>
             </div>
             <div class="form-input-group">
                 <div class="form-input-group-icon">
                     <img class="form-input-icon" src="./icon/pwd.png" alt="Password icon">
-                    <input type="{login_type_pwd}" id="pwd" class="form-input" autofocus placeholder="Password" on:blur="{(event) => verify_input(event)}" on:input="{(event) => clearInputError(event.target)}">
+                    <input type="{login_type_pwd}" id="pwd" class="form-input" autofocus placeholder="Password" on:blur="{(event) => verify_input(event)}" on:input="{(event) => clearInputError(event.target)}" 
+                    >
                 </div>
                 <div class="password-icon">
                     <img class="{login_type_pwd === 'text' ? 'eye form-hidden' : 'eye'}" src="./icon/eye-close.png" alt="eye-close" on:mousedown="{() => login_type_pwd = 'text'}" >
@@ -115,7 +137,7 @@
                   </div>
                 <div class="form-input-error-message"></div>
             </div>
-            <button class="form-button" type="submit">Continue</button>
+            <button class="form-button" type="submit" disabled={loading}>Continue</button>
             <p class="form-text">
                 <a href="#" class="form-link" on:click="{()=>console.log(document)}">
                     Forgot password
@@ -127,7 +149,7 @@
                 </a>.
             </p>
         </form>
-        <form class="{current_form === 'register' ? "form" : "form form-hidden" }" id="createAccount">
+        <form class="{current_form === 'register' ? "form" : "form form-hidden" }" id="createAccount" >
             <h1 class="form-title">Create Account</h1>
             <div class="form-head">
                 <img src="./icon/cross.png" alt="closing form" class="close_form" on:click="{() => clearAllInputError('none')}">
