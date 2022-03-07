@@ -58,8 +58,8 @@
   const handleLogin = async () => {
     try {
       loading = false
-      alert(email)
-      const { error } = await supabase.auth.signIn({ email: mail, password:  mdp})
+      alert(mail)
+      const { error } = await supabase.auth.signIn({ email: mail, password:  password.value})
       window.location.href = '/summary';
       if (error) throw error
       alert('Check your email for the login link!')
@@ -68,6 +68,24 @@
     }
      finally {
       loading = true
+    }
+  }
+  const handleSignUp = async () => {
+    try {
+      loading = false
+      jQuery('#continue-button').html('loading');
+      alert(password.value);
+      const { user, session, error } = await supabase.auth.signUp({ email: mail, password:  password.value})
+      
+      window.location.href = '/summary';
+      if (error) throw error
+      alert('Check your email for the login link!')
+    } catch (error) {
+      alert(error.error_description || error.message)
+    }
+     finally {
+      loading = true
+      jQuery('#continue-button').html('Continue');
     }
   }
 </script>
@@ -149,7 +167,7 @@
                 </a>.
             </p>
         </form>
-        <form class="{current_form === 'register' ? "form" : "form form-hidden" }" id="createAccount" >
+        <form class="{current_form === 'register' ? "form" : "form form-hidden" }" id="createAccount"  on:submit|preventDefault={handleSignUp}>
             <h1 class="form-title">Create Account</h1>
             <div class="form-head">
                 <img src="./icon/cross.png" alt="closing form" class="close_form" on:click="{() => clearAllInputError('none')}">
@@ -165,7 +183,8 @@
             <div class="form-input-group">
                 <div class="form-input-group-icon">
                     <img class="form-input-icon" src="./icon/mail.png" alt="Mail icon">
-                    <input type="text" id="mail-address" class="form-input" autofocus placeholder="Email address" on:blur="{(event) => verify_input(event)}" on:input="{(event) => clearInputError(event.target)}">
+                    <input type="text" id="mail-address" class="form-input" autofocus placeholder="Email address" on:blur="{(event) => verify_input(event)}" on:input="{(event) => clearInputError(event.target)}"
+                    bind:value="{mail}">
                 </div>
                 <div class="form-input-error-message"></div>
             </div>
@@ -191,7 +210,7 @@
                 </div>
                 <div class="form-input-error-message"></div>
             </div>
-            <button class="form-button" type="submit" class:active={$page.url.pathname === '/summary'}>
+            <button class="form-button" id="continue-button" type="submit" class:active={$page.url.pathname === '/summary'}>
                 Continue
             </button>
             <p class="form-text">Already have an account?
