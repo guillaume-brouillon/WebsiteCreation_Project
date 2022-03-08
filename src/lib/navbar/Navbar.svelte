@@ -133,17 +133,15 @@
     let mdp;
 
     const handleLogin = async () => {
-        alert("error");
         try {
             loading = false;
-            alert(password.value);
             const { error } = await supabase.auth.signIn({
                 email: mail,
                 password: password.value,
             });
-            window.location.href = "/summary";
             if (error) throw error;
             alert("Check your email for the login link!");
+            window.location.href = "/summary";
         } catch (error) {
             alert(error.error_description || error.message);
         }
