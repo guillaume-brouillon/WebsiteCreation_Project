@@ -61,6 +61,7 @@
       alert('error')
     try {
       loading = false
+      alert(password.value)
       const { error } = await supabase.auth.signIn({ email: mail, password:  password.value})
       window.location.href = '/summary';
       if (error) throw error
