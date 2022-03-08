@@ -9,12 +9,11 @@
 	let loading = false
 	let LaunchCreateAccount;
 	import { onMount } from "svelte";
-	onMount(function() {
-			LaunchCreateAccount = function(){
-			navbarcomponent.clearAllInputError('register');
-		}
-	}
-	);
+	//onMount(function() {
+	//		LaunchCreateAccount = function(){
+	//		navbarcomponent.clearAllInputError('register');
+	//	}
+	//});
 </script>
 
 <svelte:head>
