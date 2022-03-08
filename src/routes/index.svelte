@@ -1,4 +1,4 @@
-<script context="module">
+<script>
 	export const prerender = true;
 
 	import Navbar from "$lib/navbar/Navbar.svelte";
