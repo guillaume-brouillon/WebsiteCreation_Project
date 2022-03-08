@@ -11,7 +11,7 @@
 <link rel="stylesheet" type="googlebutton.css" href="//fonts.googleapis.com/css?family=Open+Sans" />
 <button class="google-btn" on:click={signInWithGoogle} type="button">
     <div class="google-icon-wrapper">
-      <img class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
+      <img class="google-icon" alt="google icon for sign in with google" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
     </div>
     <p class="btn-text"><b>Sign in with google</b></p>
 </button>
@@ -22,6 +22,7 @@
 .google-btn {
   width: 100%;
   height: 42px;
+  margin: 0.5rem 0rem;
   background-color: var(--google-blue);
   border-radius: 2px;
   box-shadow: 0 3px 4px 0 rgba(0,0,0,.25);

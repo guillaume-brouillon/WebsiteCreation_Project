@@ -1,18 +1,16 @@
 <script context="module">
 	export const prerender = true;
-</script>
 
-<script>
 	import Navbar from "$lib/navbar/Navbar.svelte";
 	import happystudent from "./websitestudent.svg";
 
 	import {supabase} from "../supabaseClient"
 	let navbarcomponent;
-let loading = false
-let LaunchCreateAccount;
+	let loading = false
+	let LaunchCreateAccount;
 	import { onMount } from "svelte";
-onMount(function(){
-		LaunchCreateAccount = function(){
+	onMount(function() {
+			LaunchCreateAccount = function(){
 			navbarcomponent.clearAllInputError('register');
 		}
 	});

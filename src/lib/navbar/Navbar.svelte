@@ -1,24 +1,73 @@
 <script>
     import { page } from '$app/stores';
-
 	import jQuery from "jquery";
 
     import './Navbar.css';
 	import GButton from "$lib/navbar/googlebutton.svelte";
     import {clickOutside} from './click_outside.js';
-    let current_form = 'none';
-    let menu_close = true;
-    function handleClickOutside(event) {
-		menu_close = true;
-	}
-    let register_type_pwd = 'password';
-    let login_type_pwd = 'password';
-    let register_type_conf_pwd = 'password';
 
+    import { supabase } from "../../supabaseClient";
+	let loading = false
+    let mail;
+    let pwd;
 
     const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{4,20}$/;
     const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,20}$/;
     const MAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+    let current_form = 'none';
+    let menu_close = true;
+
+    let register_type_pwd = 'password';
+    let login_type_pwd = 'password';
+    let register_type_conf_pwd = 'password';
+
+    const initHandler = (event, form) => {
+        if (form === 'login') { 
+            mail = event.target.querySelector("#user").value;
+            pwd = event.target.querySelector("#pwd").value;
+            handleLogin(event)
+        } else if (form === 'register') {
+            mail = event.target.querySelector("#mail-address").value;
+            pwd = event.target.querySelector("#password").value;
+            handleSignUp(event)
+        }
+    }
+
+    const handleLogin = async (event) => {
+        try {
+            loading = false;
+            const { user, session, error } = await supabase.auth.signIn({ email: mail, password: pwd});
+            console.log(user, session)
+            setFormMessage(event, "success", "You are connected");
+        if (error) {
+            throw error
+        } else {
+            window.location.href = '/summary';
+            loading = true
+        }} catch (error) {
+            setFormMessage(event, "error", "Invalid username/password combination");
+            clearAllInputError('login');
+        }
+    }
+
+    const handleSignUp = async (event) => {
+        try {
+            loading = false;
+            const { user, session, error } = await supabase.auth.signUp({ email: mail, password: pwd});
+            console.log(user, session)
+            setFormMessage(event, "success", "You are connected");
+        if (error) {
+            throw error
+        } else {
+            window.location.href = '/summary';
+            loading = true
+        }} catch (error) {
+            setFormMessage(event, "error", "Invalid username/password combination");
+            clearAllInputError('login');
+            jQuery('#continue-button').html('Continue');
+        }
+    }
 
     function verify_input(event) {
         if (event.target.id === "username" && !USER_REGEX.test(event.target.value)) {
@@ -34,14 +83,10 @@
         }
     }
 
-    export function clearAllInputError(form) {
-        current_form = form;
-        document.querySelectorAll(".form-input").forEach(inputElement => {
-            clearInputError(inputElement);
-            inputElement.value = "";
-        });
-    }
-
+    function handleClickOutside(event) {
+		menu_close = true;
+	}
+    
     function setInputError(inputElement, message) {
         inputElement.classList.add("form-input-error");
         inputElement.parentElement.parentElement.querySelector(".form-input-error-message").textContent= message;
@@ -52,51 +97,23 @@
         inputElement.parentElement.parentElement.querySelector(".form-input-error-message").textContent= "";
     }
 
-	import { supabase } from "../../supabaseClient";
-	let loading = false
-  let mail;
-  let mdp;
-
-  const handleLogin = async () => {
-      alert('error')
-    try {
-      loading = false
-      const { error } = await supabase.auth.signIn({ email: mail, password:  password.value})
-      window.location.href = '/summary';
-      if (error) throw error
-      alert('Check your email for the login link!')
-    } catch (error) {
-      alert(error.error_description || error.message)
+    function setFormMessage(event, type, message) {
+        const messageElement = event.target.querySelector(".form-message");
+        messageElement.textContent = message;
+        messageElement.classList.remove("form-message-success", "form-message-error");
+        messageElement.classList.add(`form-message-${type}`);
     }
-     finally {
-      loading = true
+    export function clearAllInputError(form) {
+        current_form = form;
+        document.querySelectorAll(".form-input").forEach(inputElement => {
+            clearInputError(inputElement);
+            inputElement.value = "";
+        });
     }
-  }
-  const handleSignUp = async () => {
-    try {
-      loading = false
-      const { user, session, error } = await supabase.auth.signUp({ email: mail, password:  password.value})
-      
-      window.location.href = '/summary';
-      if (error) throw error
-      alert('Check your email for the login link!')
-    } catch (error) {
-      alert(error.error_description || error.message)
-    }
-     finally {
-      loading = true
-      jQuery('#continue-button').html('Continue');
-    }
-  }
-
-
-
-  
 
 </script>
 
-<body>
-    
+<body> 
     <div class="navbar">
         <div class="navbar-links">
             <a class="navbar-logo" href="/">
@@ -135,7 +152,7 @@
     </div>
 
     <div class="{current_form === 'none' ? "container form-hidden" : "container" }" id="container">
-        <form class="{current_form === 'login' ? "form" : "form form-hidden" }" id="login"  on:submit|preventDefault={handleLogin}>
+        <form class="{current_form === 'login' ? "form" : "form form-hidden" }" id="login"  on:submit|preventDefault={(event) => initHandler(event, 'login')}>
             <h1 class="form-title">Login</h1>
             <div class="form-head">
                 <img src="./icon/cross.png" alt= "closing form" class ="close_form" on:click="{() => clearAllInputError('none')}">
@@ -145,15 +162,20 @@
             <div class="form-input-group">
                 <div class="form-input-group-icon">
                     <img class="form-input-icon" src="./icon/id.png" alt="ID icon">
-                    <input type="text" id="user" class="form-input" autofocus placeholder="Username or email" on:blur="{(event) => verify_input(event)}" on:input="{(event) => clearInputError(event.target)}" bind:value={mail}>
+                    <input type="text" id="user" 
+                        class="form-input" autofocus placeholder="User email" 
+                        on:blur="{(event) => verify_input(event)}" 
+                        on:input="{(event) => clearInputError(event.target)}">
                 </div>
                 <div class="form-input-error-message"></div>
             </div>
             <div class="form-input-group">
                 <div class="form-input-group-icon">
                     <img class="form-input-icon" src="./icon/pwd.png" alt="Password icon">
-                    <input type="{login_type_pwd}" id="pwd" class="form-input" autofocus placeholder="Password" on:blur="{(event) => verify_input(event)}" on:input="{(event) => clearInputError(event.target)}" 
-                    >
+                    <input type="{login_type_pwd}" id="pwd" 
+                        class="form-input" autofocus placeholder="Password" 
+                        on:blur="{(event) => verify_input(event)}" 
+                        on:input="{(event) => clearInputError(event.target)}">
                 </div>
                 <div class="password-icon">
                     <img class="{login_type_pwd === 'text' ? 'eye form-hidden' : 'eye'}" src="./icon/eye-close.png" alt="eye-close" on:mousedown="{() => login_type_pwd = 'text'}" >
@@ -174,7 +196,7 @@
                 </a>.
             </p>
         </form>
-        <form class="{current_form === 'register' ? "form" : "form form-hidden" }" id="createAccount"  on:submit|preventDefault={handleSignUp}>
+        <form class="{current_form === 'register' ? "form" : "form form-hidden" }" id="createAccount"  on:submit|preventDefault={(event) => initHandler(event, 'register')}>
             <h1 class="form-title">Create Account</h1>
             <div class="form-head">
                 <img src="./icon/cross.png" alt="closing form" class="close_form" on:click="{() => clearAllInputError('none')}">
