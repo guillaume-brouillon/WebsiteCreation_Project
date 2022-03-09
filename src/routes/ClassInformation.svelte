@@ -48,17 +48,20 @@ let property_name = ["Abstract","Objectives","Topics","Outline","Pedagolocial_Ap
 <Header/>
 <main  use:getClassInfo class="{classIdRequested == "none" ? "hidden" : "shown"} w-full">
   <div class="w-full">
-    <div class="flex containerClass" id="ClassId">
+    <div class="flex containerClass">
       {#if class_info.ID_Cours != null}
       <p>{class_info != null ? class_info.ID_Cours : ""}</p>
       {/if}
       {#if class_info.Name_of_Class != null}
       <p>{class_info != null ? class_info.Name_of_Class : ""}</p>
       {/if}
-      {#if class_info.Responsable != null}
-      <p>{class_info != null ? class_info.Responsable : ""}</p> 
-      {/if} 
     </div>
+    {#if class_info.Responsable != null}
+    <div class="flex containerClass">
+      <p>Responsable</p>
+      <p>{class_info != null ? class_info.Responsable : ""}</p> 
+    </div>
+    {/if} 
     
 
 
@@ -80,13 +83,13 @@ let property_name = ["Abstract","Objectives","Topics","Outline","Pedagolocial_Ap
 </main>
 <style>
 .containerClass{
-padding: 1.5rem;
+margin: 1rem;
+}
+.containerClass p{
+margin-right: 1rem;
 }
 .blue{
-  background-color: aliceblue;
-}
-#ClassId p{
-  margin: 0.5rem;
+  background-color: var(--primary-color);
 }
 
 </style>

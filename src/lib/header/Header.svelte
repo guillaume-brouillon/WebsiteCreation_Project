@@ -120,10 +120,33 @@
 		font-size: 1rem;
 		text-align: center;
 		position: relative;
-		top: 30%;
 		color: var(--accent-color);
 		white-space: nowrap;
 		width: fit-content;
+
+
+
+
+/* LOGO */
+
+position: relative;
+height: 25%;
+left: 0px;
+right: 0px;
+top: calc(50% - 25%/2);
+
+font-family: 'Lato';
+font-style: normal;
+font-weight: 700;
+font-size: 16px;
+/* identical to box height, or 133% */
+display: flex;
+align-items: center;
+letter-spacing: 0.1px;
+text-transform: uppercase;
+;
+
+
 	}
 
 	nav {
@@ -132,6 +155,7 @@
 		--background: var(--primary-color);
 		background: var(--background);
 		transition: 1s;
+    box-shadow: var(--box-shadow);
 	}
 	@media (max-width: 900px) {
 		#logo {
@@ -162,6 +186,7 @@
 		}
 
 	}
+	
 	@media (max-width: 600px) {
 		li:not(.active) {
 			display: none;
@@ -214,7 +239,7 @@
 		padding: 0 1em;
 		color: var(--heading-color);
 		font-weight: normal;
-		font-size: 0.8rem;
+		font-size: 14px;
 		font-style: normal;
 		letter-spacing: 0.2px;
 		text-decoration: none;
