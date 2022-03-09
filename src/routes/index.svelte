@@ -3,17 +3,20 @@
 
 	import Navbar from "$lib/navbar/Navbar.svelte";
 	import happystudent from "./websitestudent.svg";
+	import { user } from "$lib/sessionStore";
 
 	import {supabase} from "../supabaseClient"
 	let navbarcomponent;
 	let loading = false
 	let LaunchCreateAccount;
 	import { onMount } from "svelte";
-	//onMount(function() {
-	//		LaunchCreateAccount = function(){
-	//		navbarcomponent.clearAllInputError('register');
-	//	}
-	//});
+	onMount(function() {
+			LaunchCreateAccount = function(){
+			navbarcomponent.clearAllInputError('register');
+		}
+	});
+
+	
 </script>
 
 <svelte:head>

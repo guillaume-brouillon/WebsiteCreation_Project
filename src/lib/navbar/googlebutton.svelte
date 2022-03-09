@@ -1,10 +1,11 @@
 <script>
 	import { supabase } from "../../supabaseClient";
+	import { user } from "$lib/sessionStore";
     async function signInWithGoogle() {
-  const { user, session, error } = await supabase.auth.signIn({
-    provider: 'google',
-  });
-      window.location.href = '/summary';
+  const { userlocal, session, error } = await supabase.auth.signIn({
+    provider: 'google'
+  },
+			{ redirectTo: 'http://localhost:3000/summary' });
 }
 </script>
 

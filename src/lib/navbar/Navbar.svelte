@@ -1,6 +1,7 @@
 <script>
     import { page } from "$app/stores";
     import jQuery from "jquery";
+	import { user } from "$lib/sessionStore";
 
     import "./Navbar.css";
     import GButton from "$lib/navbar/googlebutton.svelte";
@@ -41,14 +42,41 @@
             handleSignUp(event);
         }
     };
+    let username;
+    let website = "";
+    let avatar_url = "";
+    async function createProfile() {
+    try {
+      loading = true
+      const user = supabase.auth.user()
 
+      const updates = {
+        id: user.id,
+        username,
+        website,
+        avatar_url,
+        updated_at: new Date(),
+      }
+
+      let { error } = await supabase.from('profiles').insert(updates)
+
+      if (error) throw error
+    } catch (error) {
+      console.log(error.message)
+    } finally {
+      loading = false
+    }
+  }
     const handleSignUp = async (event) => {
         try {
             loading = false;
-            const { user, session, error } = await supabase.auth.signUp({
+            const { userlocal, session, error } = await supabase.auth.signUp({
                 email: mail,
                 password: pwd,
             });
+            
+            user.set(supabase.auth.user())
+            createProfile();
             console.log(user, session);
             setFormMessage(event, "success", "You are connected");
             if (error) {
@@ -132,20 +160,25 @@
 
     let mdp;
 
-    const handleLogin = async () => {
+    const handleLogin = async (event) => {
         try {
             loading = false;
-            const { error } = await supabase.auth.signIn({
-                email: mail,
-                password: password.value,
-            });
-            if (error) throw error;
-            alert("Check your email for the login link!");
-            window.location.href = "/summary";
-        } catch (error) {
-            alert(error.error_description || error.message);
+            const { userlocal, session, error } = await supabase.auth.signIn({ email: mail, password: pwd});
+            
+            user.set(supabase.auth.user())
+            console.log(userlocal, session)
+            setFormMessage(event, "success", "You are connected");
+        if (error) {
+            throw error
+        } else {
+            window.location.href = '/summary';
+            loading = true
+        }} catch (error) {
+            alert(error.message);
+            setFormMessage(event, "error", "Invalid username/password combination");
+            clearAllInputError('login');
         }
-    };
+    }
     function setFormMessage(event, type, message) {
         const messageElement = event.target.querySelector(".form-message");
         messageElement.textContent = message;
@@ -361,6 +394,7 @@
                         placeholder="Username"
                         on:blur={(event) => verify_input(event)}
                         on:input={(event) => clearInputError(event.target)}
+                        bind:value={username}
                     />
                 </div>
                 <div class="form-input-error-message" />
