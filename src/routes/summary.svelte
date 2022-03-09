@@ -70,10 +70,4 @@ let username;
 </main>
 
 <style>
-.hidden{
-	display: none;
-}
-.shown{
-	display: flex;
-}
 </style>

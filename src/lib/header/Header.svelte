@@ -86,8 +86,8 @@
 			<li class:active={$page.url.pathname === "/choose"}>
 				<a sveltekit:prefetch href="/choose">Choose your classes</a>
 			</li>
-			<li class:active={$page.url.pathname === "/exploreclasses"}>
-				<a sveltekit:prefetch href="/exploreclasses">Explore Classes</a>
+			<li class:active={$page.url.pathname === "/ClassInformation"}>
+				<a sveltekit:prefetch href="/ClassInformation">Explore Classes</a>
 				<a sveltekit:prefetch href="/choose" class="filler"
 					>Choose your classes</a
 				>
