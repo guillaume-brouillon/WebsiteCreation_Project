@@ -6,7 +6,7 @@
 
 	
 let loading = false;
-let class_info = null;
+let class_info = {Outline: null};
 	async function getClassInfo() {
     if(classIdRequested != "none"){
       try {
@@ -41,39 +41,38 @@ let class_info = null;
     
   }
 
-
+let property_name = ["Abstract","Objectives","Topics","Outline","Pedagolocial_Approach","Grading","Bibliography"]
   let open = false;
 </script>
 
 <Header/>
 <main  use:getClassInfo class="{classIdRequested == "none" ? "hidden" : "shown"} w-full">
   <div class="w-full">
-    <div class="flex containerClass blue">
+    <div class="flex containerClass" id="ClassId">
+      {#if class_info.ID_Cours != null}
       <p>{class_info != null ? class_info.ID_Cours : ""}</p>
+      {/if}
+      {#if class_info.Name_of_Class != null}
       <p>{class_info != null ? class_info.Name_of_Class : ""}</p>
-      <p>{class_info != null ? class_info.Responsable : ""}</p>  
+      {/if}
+      {#if class_info.Responsable != null}
+      <p>{class_info != null ? class_info.Responsable : ""}</p> 
+      {/if} 
     </div>
     
 
 
     <div  class="containerClass">
 <Accordion>
-<AccordionItem {open}>
-<h5 slot="title" >Abstract</h5>
-<p>{class_info != null ? class_info.Abstract : ""}</p>
-</AccordionItem>
-
-{#if class_info != null && class_info.Objectives != null }
-<AccordionItem {open}>
-<h5 slot="title" >Objectives</h5>
-<p>{class_info != null ? class_info.Objectives : ""}</p>
-</AccordionItem>
-{/if}
-
+  {#each property_name as property}
+  {#if class_info[property] != null }
   <AccordionItem {open}>
-  <h5 slot="title" >Outline</h5>
-  <p>{class_info != null ? class_info.Outline : ""}</p>
+  <h5 slot="title" >{property.replace("_"," ")}</h5>
+  <div bind:innerHTML={class_info[property]} 
+  contenteditable="true"></div>
   </AccordionItem>
+  {/if}
+  {/each}
 </Accordion>
 
 </div>
@@ -86,4 +85,8 @@ padding: 1.5rem;
 .blue{
   background-color: aliceblue;
 }
+#ClassId p{
+  margin: 0.5rem;
+}
+
 </style>
