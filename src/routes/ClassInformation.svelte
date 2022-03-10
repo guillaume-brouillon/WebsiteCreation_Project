@@ -138,29 +138,42 @@
   }
 
   }
-  let tracks = null ;
+  let tracks = [{filliere:"none"}] ;
   async function getTrackInfo(){
     if (classIdRequested != "none") {
       try {
         let user = supabase.auth.user();
 
-        console.log("user connected");
-
-        let { data, error, status } = await supabase
-          .from("tracks_basic_info_for_class")
-          .select(`*`)
-          .eq("ID_Cours", classIdRequested)
-          .single();
-
-          console.log("gotinfo");
+        let { data, error, status } = await supabase.rpc('get_track',{courside: classIdRequested})
 
         if (error && status !== 406) throw error;
 
-        console.log(data)
         if (data) {
-          console.log("data not null");
           tracks = data;
-          console.log(tracks)
+        }
+      } catch (error) {
+        console.log(error.message);
+        alert(error.message);
+      } finally {
+        loading = false;
+      }
+    }
+}
+let crenaux_lists = null;
+async function getCrenauxInfo(){
+    if (classIdRequested != "none") {
+      try {
+        let user = supabase.auth.user();
+
+        let { data, error, status } = await supabase
+        .from("Crenaux")
+        .select("*")
+        .match({Course_ID: classIdRequested})
+
+        if (error && status !== 406) throw error;
+
+        if (data) {
+          crenaux_lists = data;
         }
       } catch (error) {
         console.log(error.message);
@@ -260,14 +273,18 @@ return {};
     </Accordion>
   </div>
 
-  <div class="containerClass" use:getTrackInfo>
+  <div class="containerClass bg-transparent" style="background-color: transparent;" use:getTrackInfo>
+    <p>Tracks</p>
   {#if tracks != null}
     {#each tracks as track}
-      <Tag>hello</Tag>
+      <Tag>{track.filliere}</Tag>
     {/each}
   {/if}
   </div>
   
+  <div  class="containerClass">
+
+  </div>
 </main>
 
 <style>
