@@ -1,11 +1,19 @@
 <script>
 	import { supabase } from "../../supabaseClient";
-	import { user } from "$lib/sessionStore";
+	import { usercontainer } from "$lib/sessionStore";
+  
+	let user;
+  usercontainer.subscribe(value => {
+		user = value;
+	});
+
     async function signInWithGoogle() {
-  const { userlocal, session, error } = await supabase.auth.signIn({
+  let { user, session, error } = await supabase.auth.signIn({
     provider: 'google'
   },
 			{ redirectTo: 'http://localhost:3000/summary' });
+      
+      logedin = true;
 }
 </script>
 

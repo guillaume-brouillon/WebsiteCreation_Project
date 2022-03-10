@@ -3,9 +3,6 @@
 
 	import Navbar from "$lib/navbar/Navbar.svelte";
 	import happystudent from "./websitestudent.svg";
-	import { user } from "$lib/sessionStore";
-
-	import {supabase} from "../supabaseClient"
 	let navbarcomponent;
 	let loading = false
 	let LaunchCreateAccount;
@@ -19,6 +16,23 @@
 	
 </script>
 
+<script context="module">
+    import { supabase } from "../supabaseClient";
+	let user = supabase.auth.user();
+    export async function load() {
+
+    if (user) {
+		
+	console.log("ok")
+            return {
+                status: 302,
+                redirect: "/summary"
+            };
+    }
+	return {};
+    }
+
+</script>
 <svelte:head>
 	<title>My ESSEC classes</title>
 </svelte:head>
@@ -46,7 +60,7 @@
 				pdf file to the other. My Essec classes
 			</p>
 
-			<button on:click="{LaunchCreateAccount}"> Start </button>
+			<button on:click="{LaunchCreateAccount}" class="custombutton m-auto"> Start </button>
 		</div>
 	</div>
 </main>
@@ -103,35 +117,5 @@
 	}
 	img {
 		display: block;
-	}
-	button {
-		/* Accent / Default */
-		background: var(--accent-color);
-
-		/* Button - bold 14 (18, 0.3px) */
-		font-family: Mulish;
-		font-style: normal;
-		font-weight: bold;
-		font-size: 14px;
-		line-height: 18px;
-		/* identical to box height, or 129% */
-		display: flex;
-		align-items: center;
-		text-align: center;
-		letter-spacing: 0.3px;
-
-		/* Light / White */
-		color: #ffffff;
-
-		padding-top: 1rem;
-		padding-bottom: 1rem;
-		padding-left: 1.5rem;
-		padding-right: 1.5rem;
-		margin-left: auto;
-		margin-right: auto;
-		margin-top: 1rem;
-	}
-	button:hover {
-		background-color: var(--tertiary-color);
 	}
 </style>

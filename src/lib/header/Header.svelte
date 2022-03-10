@@ -2,10 +2,14 @@
 	import { page } from '$app/stores';
 	import logo from "./Logo_essec_simple.svg";
 	
+	import { InlineNotification } from "carbon-components-svelte";
 
 
 	import jQuery from "jquery";
 	import { onMount } from "svelte";
+	import {supabase} from "../../supabaseClient"
+	let errormessage = "";
+	let showerror = false;
 	//window.$ = window.jQuery = jQuery; '../../../static/icon/edu.png'
 	let navigation_open = false;
 
@@ -56,11 +60,26 @@
 
 		navigation_open = !navigation_open;
 	}
+
+	async function logout(){
+		try{
+		console.log("logout");
+		const { error } = await supabase.auth.signOut()
+		if(error) throw error;
+
+		window.location.href=""
+		}
+		catch(error){
+errormessage = error.message;
+showerror = true;
+		}
+	}
 </script>
 
-<header>
+
+<header class="shadow-lg">
 	
-	<nav class="top: 0px w-full h-16" id="navbar">
+	<nav class="top: 0px w-full h-16 " id="navbar">
 		<img id="logoseulsimple" class="h-auto" src={logo} alt="Logo Essec" />
 		<button class="w-12" on:click={reveal_nav_pannel} id="logoseul">
 			<img class="h-auto" src={logo} alt="Logo Essec" />
@@ -72,7 +91,7 @@
 		</div>
 		<ul id="navigationlinks">
 			<li class:active={$page.url.pathname === "/"}>
-				<a sveltekit:prefetch href="/">Home</a>
+				<a  href="/">Home</a>
 				<a sveltekit:prefetch href="/choose" class="filler"
 					>Choose your classes</a
 				>
@@ -107,12 +126,20 @@
 			</li>
 		</ul>
 	</nav>
+	<button class="custombutton ml-auto mt-auto mb-auto mr-5 w-28" on:click="{logout}" >Log Out</button>
 </header>
-
+{#if showerror}
+<InlineNotification 
+  title="Error:"
+  subtitle={errormessage}
+/>
+{/if}
 <style>
+	
 	header {
 		display: flex;
 		justify-content: space-between;
+		background-color: var(--primary-color);
 	}
 	h1 {
 		margin-left: 10px;
@@ -155,7 +182,6 @@ text-transform: uppercase;
 		--background: var(--primary-color);
 		background: var(--background);
 		transition: 1s;
-    box-shadow: var(--box-shadow);
 	}
 	@media (max-width: 900px) {
 		#logo {

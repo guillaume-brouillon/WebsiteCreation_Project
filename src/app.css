@@ -24,11 +24,13 @@
     --border-radius: 4px;
     --font-family: 'Quicksand', sans-serif;
     --box-shadow: 0 0px 20px rgba(0, 0, 0, 0.4) ;
-    background: var(--pure-white);
+    background: var(--page-color);
 	--pure-white: #ffffff;
+	--page-color: #ffffff;
 	--primary-color: rgba(242, 246, 254, 1);
 	--secondary-color: #d0dde9;
 	--tertiary-color: rgb(96, 136, 209);
+	--bandeau-color: #FFFFFF;
 	--accent-color: rgba(60, 100, 177, 1);
 	--heading-color: rgba(0, 0, 0, 0.7);
 	--text-color: #444444;
@@ -74,16 +76,48 @@ body::before {
 	flex-direction: column;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Lora&family=Space+Mono&display=swap');
+
+
+button.custombutton{
+	/* Accent / Default */
+	background: var(--accent-color);
+
+	/* Button - bold 14 (18, 0.3px) */
+	font-family: Mulish;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 14px;
+	line-height: 18px;
+	/* identical to box height, or 129% */
+	display: flex;
+	flex-wrap: nowrap;
+	align-items: center;
+	text-align: center;
+	letter-spacing: 0.3px;
+
+	/* Light / White */
+	color: #ffffff;
+
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+	padding-left: 1.5rem;
+	padding-right: 1.5rem;
+}
+button.custombutton:hover {
+	background-color: var(--tertiary-color);
+}
+
 h1,
 h2,
 p {
 	font-weight: 400;
 	color: var(--heading-color);
+	line-height: 1.5;
+	
+	font-family: 'Lora', serif;
 }
 
-p {
-	line-height: 1.5;
-}
 
 a {
 	color: var(--accent-color);
@@ -135,5 +169,18 @@ button:focus:not(:focus-visible) {
 	display: none;
 }
 .shown{
+	display: flex;
+}
+.vishidden{
+	visibility: hidden;
+}
+
+:global(.hidden){
+	display: none;
+}
+:global(.vishidden){
+	visibility: hidden;
+}
+:global(.shown){
 	display: flex;
 }

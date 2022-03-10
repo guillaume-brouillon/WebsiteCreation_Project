@@ -1,16 +1,16 @@
 <script>
+    import { supabase } from "../../supabaseClient";
     import { page } from "$app/stores";
     import jQuery from "jquery";
-	import { user } from "$lib/sessionStore";
 
     import "./Navbar.css";
     import GButton from "$lib/navbar/googlebutton.svelte";
     import { clickOutside } from "./click_outside.js";
 
-    import { supabase } from "../../supabaseClient";
     let loading = false;
     let mail;
     let pwd;
+
 
     export function clearAllInputError(form) {
         current_form = form;
@@ -70,12 +70,12 @@
     const handleSignUp = async (event) => {
         try {
             loading = false;
-            const { userlocal, session, error } = await supabase.auth.signUp({
+            const { user, session, error } = await supabase.auth.signUp({
                 email: mail,
                 password: pwd,
             });
             
-            user.set(supabase.auth.user())
+            logedin = true
             createProfile();
             console.log(user, session);
             setFormMessage(event, "success", "You are connected");
@@ -163,10 +163,8 @@
     const handleLogin = async (event) => {
         try {
             loading = false;
-            const { userlocal, session, error } = await supabase.auth.signIn({ email: mail, password: pwd});
+            const { user, session, error } = await supabase.auth.signIn({ email: mail, password: pwd});
             
-            user.set(supabase.auth.user())
-            console.log(userlocal, session)
             setFormMessage(event, "success", "You are connected");
         if (error) {
             throw error
