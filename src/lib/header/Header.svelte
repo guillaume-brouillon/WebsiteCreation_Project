@@ -7,7 +7,6 @@
 
 	import jQuery from "jquery";
 	import { onMount } from "svelte";
-	import {supabase} from "../../supabaseClient"
 	let errormessage = "";
 	let showerror = false;
 	//window.$ = window.jQuery = jQuery; '../../../static/icon/edu.png'
@@ -67,7 +66,7 @@
 		const { error } = await supabase.auth.signOut()
 		if(error) throw error;
 
-		window.location.href=""
+		window.location.href="/"
 		}
 		catch(error){
 errormessage = error.message;
@@ -75,7 +74,23 @@ showerror = true;
 		}
 	}
 </script>
+<script context="module">
+    import { supabase } from "../../supabaseClient";
+	let user = supabase.auth.user();
+    export async function load() {
 
+    if (!user) {
+		
+	console.log("ok")
+            return {
+                status: 302,
+                redirect: "/"
+            };
+    }
+	return {};
+    }
+
+</script>
 
 <header class="shadow-lg">
 	
