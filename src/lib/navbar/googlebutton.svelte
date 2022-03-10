@@ -1,11 +1,5 @@
 <script>
 	import { supabase } from "../../supabaseClient";
-	import { usercontainer } from "$lib/sessionStore";
-  
-	let user;
-  usercontainer.subscribe(value => {
-		user = value;
-	});
 
     async function signInWithGoogle() {
   let { user, session, error } = await supabase.auth.signIn({
