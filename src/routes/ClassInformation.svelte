@@ -19,7 +19,6 @@
         loading = true;
         let user = supabase.auth.user();
 
-        console.log("user connected");
 
         let { data, error, status } = await supabase
           .from("ClassInformation")
@@ -27,9 +26,6 @@
           .eq("ID_Cours", classIdRequested)
           .single();
 
-        console.log("info fetched");
-        console.log(data);
-        console.log("info fetched");
 
         if (error && status !== 406) throw error;
 
@@ -71,7 +67,6 @@
         loading = true;
         let user = supabase.auth.user();
 
-        console.log("user connected");
 
         let { data, error, status } = await supabase
           .from("UserClassInfo")
@@ -141,6 +136,39 @@
   catch(error){
     alert(error.message)
   }
+
+  }
+  let tracks = null ;
+  async function getTrackInfo(){
+    if (classIdRequested != "none") {
+      try {
+        let user = supabase.auth.user();
+
+        console.log("user connected");
+
+        let { data, error, status } = await supabase
+          .from("tracks_basic_info_for_class")
+          .select(`*`)
+          .eq("ID_Cours", classIdRequested)
+          .single();
+
+          console.log("gotinfo");
+
+        if (error && status !== 406) throw error;
+
+        console.log(data)
+        if (data) {
+          console.log("data not null");
+          tracks = data;
+          console.log(tracks)
+        }
+      } catch (error) {
+        console.log(error.message);
+        alert(error.message);
+      } finally {
+        loading = false;
+      }
+    }
 }
 </script>
 <script context="module">
@@ -232,8 +260,12 @@ return {};
     </Accordion>
   </div>
 
-  <div class="containerClass">
-    hello
+  <div class="containerClass" use:getTrackInfo>
+  {#if tracks != null}
+    {#each tracks as track}
+      <Tag>hello</Tag>
+    {/each}
+  {/if}
   </div>
   
 </main>
