@@ -70,7 +70,9 @@
       let { error } = await supabase
         .from("UserClassInfo")
         .insert(default_user_info);
-    } catch (error) {}
+    } catch (error) {
+      alert(error);
+    }
   }
   async function getClassInfoUser() {
     if (classIdRequested != "none") {

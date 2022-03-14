@@ -3,8 +3,8 @@
 	import Header from "$lib/header/Header.svelte";
 	import { supabase } from "../supabaseClient";
 
-    //import { createForm } from "svelte-forms-lib";
-    //import * as yup from "yup";
+    import { createForm } from "svelte-forms-lib";
+    import * as yup from "yup";
 
     import { TextInput, TextArea, Button, FormGroup, Form, InlineNotification } from "carbon-components-svelte";
 
@@ -16,11 +16,10 @@
 
     let apiResult = null;
 
-    const { form, errors, handleChange, handleSubmit, isSubmitting, handleReset } = createForm({
+    const { form, errors, handleSubmit, isSubmitting, handleReset } = createForm({
         initialValues: { name: "", email: "", message: "" },
         validationSchema: validationSchema,
         onSubmit: async values => {
-
             try {
                 var result = await supabase.from("ContactUs").insert(values);
 
@@ -35,7 +34,7 @@
             }
 
             handleReset();
-      }
+        }
     });
 
 </script>
@@ -72,20 +71,20 @@
 
         <FormGroup>
             <TextInput labelText="Name:" name="name" 
-                on:change={handleChange} bind:value={$form.name}
+                bind:value={$form.name}
                 invalid={$errors.name.length > 0} invalidText={$errors.name}/>
         </FormGroup>
 
         <FormGroup>
             <TextInput labelText="Email:" name="email" type="email" 
-                on:change={handleChange} bind:value={$form.email}
+                bind:value={$form.email}
                 invalid={$errors.email.length > 0} invalidText={$errors.email}/>
         </FormGroup>
 
 
         <FormGroup>
             <TextArea labelText="Message:" name="message" type="textarea"
-                on:change={handleChange} bind:value={$form.message}
+                bind:value={$form.message}
                 invalid={$errors.message.length > 0} invalidText={$errors.message}/>
         </FormGroup>
 
