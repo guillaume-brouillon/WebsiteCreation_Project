@@ -25,8 +25,8 @@ let user = supabase.auth.user();
       }
     } catch (error) {	
 		alert(error.message)
-    } finally {
-      loading = false
+    //} finally {
+      //loading = false
     }
   }
 

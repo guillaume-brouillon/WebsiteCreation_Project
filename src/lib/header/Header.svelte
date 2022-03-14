@@ -60,18 +60,19 @@
 		navigation_open = !navigation_open;
 	}
 
-	async function logout(){
-		try{
-		console.log("logout");
-		const { error } = await supabase.auth.signOut()
-		console.log("logedout");
-		if(error) throw error;
 
-		window.location.href="/"
-		}
-		catch(error){
-errormessage = error.message;
-showerror = true;
+	const logout = async () => {
+		try{
+			const { error } = await supabase.auth.signOut()
+			if(error) {
+				throw error;
+			} else {
+				window.location.replace('/');
+			}
+		} catch (error) {
+			window.location.replace('/');
+			errormessage = error.message;
+			showerror = true;
 		}
 	}
 </script>
@@ -106,13 +107,15 @@ showerror = true;
 			<h1 class="h-auto">My Classes</h1>
 		</div>
 		<ul id="navigationlinks">
+<!--
 			<li class:active={$page.url.pathname === "/"}>
 				<a  href="/">Home</a>
 				<a sveltekit:prefetch href="/choose" class="filler"
 					>Choose your classes</a
 				>
 			</li>
-			<li class:active={$page.url.pathname === "/summary"}>
+-->
+			<li class:active={$page.url.pathname === "/summary" || $page.url.pathname === "/" }>
 				<a sveltekit:prefetch href="/summary">My Summary</a>
 				<a sveltekit:prefetch href="/choose" class="filler"
 					>Choose your classes</a
