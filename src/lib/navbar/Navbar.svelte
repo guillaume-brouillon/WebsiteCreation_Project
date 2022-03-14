@@ -92,7 +92,7 @@
                 "Invalid username/password combination"
             );
             clearAllInputError("login");
-            jQuery("#continue-button").html("Continue");
+            //jQuery("#continue-button").html("Continue");
         }
     };
 
@@ -172,7 +172,7 @@
             window.location.href = '/summary';
             loading = true
         }} catch (error) {
-            alert(error.message);
+            //alert(error.message);
             setFormMessage(event, "error", "Invalid username/password combination");
             clearAllInputError('login');
         }
