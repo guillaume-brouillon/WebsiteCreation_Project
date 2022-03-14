@@ -64,6 +64,7 @@
 		try{
 		console.log("logout");
 		const { error } = await supabase.auth.signOut()
+		console.log("logedout");
 		if(error) throw error;
 
 		window.location.href="/"

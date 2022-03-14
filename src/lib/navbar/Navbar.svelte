@@ -92,7 +92,6 @@
                 "Invalid username/password combination"
             );
             clearAllInputError("login");
-            jQuery("#continue-button").html("Continue");
         }
     };
 
