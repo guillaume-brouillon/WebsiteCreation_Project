@@ -193,7 +193,7 @@
     <div class="navbar">
         <div class="navbar-links">
             <a class="navbar-logo" href="/">
-                <img src="./icon/edu.png" alt="logo" />
+                <img src="../../../static/icon/edu.png" alt="logo" />
             </a>
             <div class="navbar-items items">
                 <p><a href="#item1">Home</a></p>
@@ -222,7 +222,7 @@
                 id="menu-logo"
             >
                 <img
-                    src="./icon/menu.png"
+                    src="../../../static/icon/menu.png"
                     alt="menu icon"
                     id="menu-img"
                     on:click={() => (menu_close = false)}
@@ -273,7 +273,7 @@
             <h1 class="form-title">Login</h1>
             <div class="form-head">
                 <img
-                    src="./icon/cross.png"
+                    src="../../../static/icon/cross.png"
                     alt="closing form"
                     class="close_form"
                     on:click={() => clearAllInputError("none")}
@@ -285,7 +285,7 @@
                 <div class="form-input-group-icon">
                     <img
                         class="form-input-icon"
-                        src="./icon/id.png"
+                        src="../../../static/icon/id.png"
                         alt="ID icon"
                     />
                     <input
@@ -304,7 +304,7 @@
                 <div class="form-input-group-icon">
                     <img
                         class="form-input-icon"
-                        src="./icon/pwd.png"
+                        src="../../../static/icon/pwd.png"
                         alt="Password icon"
                     />
                     <input
@@ -322,7 +322,7 @@
                         class={login_type_pwd === "text"
                             ? "eye form-hidden"
                             : "eye"}
-                        src="./icon/eye-close.png"
+                        src="../../../static/icon/eye-close.png"
                         alt="eye-close"
                         on:mousedown={() => (login_type_pwd = "text")}
                     />
@@ -330,7 +330,7 @@
                         class={login_type_pwd === "password"
                             ? "eye-off form-hidden"
                             : "eye-off"}
-                        src="./icon/eye-open.png"
+                        src="../../../static/icon/eye-open.png"
                         alt="eye-open"
                         on:mouseup={() => (login_type_pwd = "password")}
                     />
@@ -370,7 +370,7 @@
             <h1 class="form-title">Create Account</h1>
             <div class="form-head">
                 <img
-                    src="./icon/cross.png"
+                    src="../../../static/icon/cross.png"
                     alt="closing form"
                     class="close_form"
                     on:click={() => clearAllInputError("none")}
@@ -381,7 +381,7 @@
                 <div class="form-input-group-icon">
                     <img
                         class="form-input-icon"
-                        src="./icon/id.png"
+                        src="../../../static/icon/id.png"
                         alt="ID icon"
                     />
                     <input
@@ -401,7 +401,7 @@
                 <div class="form-input-group-icon">
                     <img
                         class="form-input-icon"
-                        src="./icon/mail.png"
+                        src="../../../static/icon/mail.png"
                         alt="Mail icon"
                     />
                     <input
@@ -421,7 +421,7 @@
                 <div class="form-input-group-icon">
                     <img
                         class="form-input-icon"
-                        src="./icon/pwd.png"
+                        src="../../../static/icon/pwd.png"
                         alt="Password icon"
                     />
                     <input
@@ -439,7 +439,7 @@
                         class={register_type_pwd === "text"
                             ? "eye form-hidden"
                             : "eye"}
-                        src="./icon/eye-close.png"
+                        src="../../../static/icon/eye-close.png"
                         alt="eye-close"
                         on:mousedown={() => (register_type_pwd = "text")}
                     />
@@ -447,7 +447,7 @@
                         class={register_type_pwd === "password"
                             ? "eye-off form-hidden"
                             : "eye-off"}
-                        src="./icon/eye-open.png"
+                        src="../../../static/icon/eye-open.png"
                         alt="eye-open"
                         on:mouseup={() => (register_type_pwd = "password")}
                     />
@@ -458,7 +458,7 @@
                 <div class="form-input-group-icon">
                     <img
                         class="form-input-icon"
-                        src="./icon/check.png"
+                        src="../../../static/icon/check.png"
                         alt="Checked password icon"
                     />
                     <input
@@ -476,7 +476,7 @@
                         class={register_type_conf_pwd === "text"
                             ? "eye form-hidden"
                             : "eye"}
-                        src="./icon/eye-close.png"
+                        src="../../../static/icon/eye-close.png"
                         alt="eye-close"
                         on:mousedown={() => (register_type_conf_pwd = "text")}
                     />
@@ -484,7 +484,7 @@
                         class={register_type_conf_pwd === "password"
                             ? "eye-off form-hidden"
                             : "eye-off"}
-                        src="./icon/eye-open.png"
+                        src="../../../static/icon/eye-open.png"
                         alt="eye-open"
                         on:mouseup={() => (register_type_conf_pwd = "password")}
                     />

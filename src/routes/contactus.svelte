@@ -3,8 +3,8 @@
 	import Header from "$lib/header/Header.svelte";
 	import { supabase } from "../supabaseClient";
 
-    import { createForm } from "svelte-forms-lib";
-    import * as yup from "yup";
+    //import { createForm } from "svelte-forms-lib";
+    //import * as yup from "yup";
 
     import { TextInput, TextArea, Button, FormGroup, Form, InlineNotification } from "carbon-components-svelte";
 
