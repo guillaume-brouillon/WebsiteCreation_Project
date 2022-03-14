@@ -1,10 +1,8 @@
 <script>
 	export const prerender = true;
-
 	import Navbar from "$lib/navbar/Navbar.svelte";
 	import happystudent from "./websitestudent.svg";
 	let navbarcomponent;
-	let loading = false
 	let LaunchCreateAccount;
 	import { onMount } from "svelte";
 	onMount(function() {

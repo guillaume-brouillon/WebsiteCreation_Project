@@ -1,5 +1,4 @@
 <script>
-  import { classIdRequested } from "$lib/sessionStore";
   import Header from "$lib/header/Header.svelte";
   import {
     Accordion,
@@ -8,17 +7,31 @@
     Dropdown,
     Toggle,
   } from "carbon-components-svelte";
+  
+  import Search from '$lib/search/Search.svelte';
+  import { courseID } from '$lib/sessionStore';
+  
+  let classIdRequested;
+  let class_info = { Outline: null };
+  let info = 'hidden';
+
+  courseID.subscribe(value => {
+      classIdRequested = value;
+      getClassInfo()
+      if (classIdRequested === 'none') {
+      info = 'hidden' 
+    }
+    else { 
+      info = 'shown'
+    }
+  });
 
   let DesirabilityId = 0;
   let StatusId = 0;
-  let loading = false;
-  let class_info = { Outline: null };
   async function getClassInfo() {
-    if (classIdRequested != "none") {
+    if(classIdRequested !== 'none') {
       try {
-        loading = true;
         let user = supabase.auth.user();
-
 
         let { data, error, status } = await supabase
           .from("ClassInformation")
@@ -35,10 +48,8 @@
       } catch (error) {
         console.log(error.message);
         alert(error.message);
-      } finally {
-        loading = false;
-      }
-    }
+      } 
+    } 
   }
   
   const user = supabase.auth.user();
@@ -64,7 +75,6 @@
   async function getClassInfoUser() {
     if (classIdRequested != "none") {
       try {
-        loading = true;
         let user = supabase.auth.user();
 
 
@@ -88,8 +98,6 @@
       } catch (error) {
         console.log(error.message);
         alert(error.message);
-      } finally {
-        loading = false;
       }
     }
   }
@@ -154,8 +162,6 @@
       } catch (error) {
         console.log(error.message);
         alert(error.message);
-      } finally {
-        loading = false;
       }
     }
 }
@@ -178,8 +184,6 @@ async function getCrenauxInfo(){
       } catch (error) {
         console.log(error.message);
         alert(error.message);
-      } finally {
-        loading = false;
       }
     }
 }
@@ -201,9 +205,12 @@ return {};
 
 </script>
 <Header />
+<div>
+  <Search />
+</div>
 <main
   use:getClassInfo
-  class="{classIdRequested == 'none' ? 'hidden' : 'shown'} w-full"
+  class="{classIdRequested === 'none' ? 'hidden' : 'shown'} w-full"
 >
   <div style="background-color: var(--bandeau-color);" class="flex m-auto " use:getClassInfoUser>
     <div class="BarAcceptClass flex content-center flex-wrap">

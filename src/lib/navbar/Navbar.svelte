@@ -7,7 +7,6 @@
     import GButton from "$lib/navbar/googlebutton.svelte";
     import { clickOutside } from "./click_outside.js";
 
-    let loading = false;
     let mail;
     let pwd;
 
@@ -40,6 +39,9 @@
             mail = event.target.querySelector("#mail-address").value;
             pwd = event.target.querySelector("#password").value;
             handleSignUp(event);
+        } else if (form === "reset-pwd") {
+            mail = event.target.querySelector("#reset-mail").value;
+            resetPassword(event)
         }
     };
     let username;
@@ -47,7 +49,6 @@
     let avatar_url = "";
     async function createProfile() {
     try {
-      loading = true
       const user = supabase.auth.user()
 
       const updates = {
@@ -63,13 +64,10 @@
       if (error) throw error
     } catch (error) {
       console.log(error.message)
-    } finally {
-      loading = false
     }
   }
     const handleSignUp = async (event) => {
         try {
-            loading = false;
             const { user, session, error } = await supabase.auth.signUp({
                 email: mail,
                 password: pwd,
@@ -83,7 +81,6 @@
                 throw error;
             } else {
                 window.location.href = "/summary";
-                loading = true;
             }
         } catch (error) {
             setFormMessage(
@@ -92,9 +89,35 @@
                 "Invalid username/password combination"
             );
             clearAllInputError("login");
-            //jQuery("#continue-button").html("Continue");
         }
     };
+
+    const handleLogin = async (event) => {
+        try {
+            const { user, session, error } = await supabase.auth.signIn({ email: mail, password: pwd});
+            setFormMessage(event, "success", "You are connected");
+        if (error) {
+            throw error
+        } else {
+            window.location.href = '/summary';
+        }} catch (error) {
+            setFormMessage(event, "error", "Invalid username/password combination");
+            clearAllInputError('login');
+        }
+    }
+
+    const resetPassword = async (event) => {
+        try {
+            const { data, error } = supabase.auth.api.resetPasswordForEmail(mail)
+            //setFormMessage(event, "success", "Check your mail address to reset your password");
+            //console.log(data)
+            //clearAllInputError('login');
+        } catch (error) {
+            //console.log("ok")
+            //setFormMessage(event, "error", "The reset password mail could not be sent. Verify your mail address");
+            //clearAllInputError('reset-pwd');
+        }
+    }
 
     function verify_input(event) {
         if (
@@ -106,21 +129,13 @@
                 "Username must be 5 to 20 characters long and beggin with a letter. Characters can be any letters from a to z and any numbers from 0 through 9."
             );
         } else if (
-            event.target.id === "mail-address" &&
+            (event.target.id === "mail-address" ||
+            event.target.id === "user" ||
+            event.target.id === "reset-mail")
+            &&
             !MAIL_REGEX.test(event.target.value)
         ) {
             setInputError(event.target, "Enter a valid mail address.");
-        } else if (
-            event.target.id === "user" &&
-            !(
-                MAIL_REGEX.test(event.target.value) ||
-                USER_REGEX.test(event.target.value)
-            )
-        ) {
-            setInputError(
-                event.target,
-                "Enter a valid username or mail address."
-            );
         } else if (
             (event.target.id === "password" || event.target.id === "pwd") &&
             !PWD_REGEX.test(event.target.value)
@@ -158,25 +173,6 @@
         ).textContent = "";
     }
 
-    let mdp;
-
-    const handleLogin = async (event) => {
-        try {
-            loading = false;
-            const { user, session, error } = await supabase.auth.signIn({ email: mail, password: pwd});
-            
-            setFormMessage(event, "success", "You are connected");
-        if (error) {
-            throw error
-        } else {
-            window.location.href = '/summary';
-            loading = true
-        }} catch (error) {
-            //alert(error.message);
-            setFormMessage(event, "error", "Invalid username/password combination");
-            clearAllInputError('login');
-        }
-    }
     function setFormMessage(event, type, message) {
         const messageElement = event.target.querySelector(".form-message");
         messageElement.textContent = message;
@@ -337,15 +333,15 @@
                 </div>
                 <div class="form-input-error-message" />
             </div>
-            <button class="form-button" type="submit" disabled={loading}
+            <button class="form-button" type="submit"
                 >Continue</button
             >
             <GButton />
             <p class="form-text">
                 <a
-                    href="#"
+                    href="./"
                     class="form-link"
-                    on:click={() => console.log(document)}
+                    on:click={() => clearAllInputError("reset-pwd")}
                 >
                     Forgot password
                 </a>
@@ -362,6 +358,52 @@
                 </a>.
             </p>
         </form>
+        <form
+            class={current_form === "reset-pwd" ? "form" : "form form-hidden"}
+            id="resetpwd"
+            on:submit|preventDefault={(event) => initHandler(event, "reset-pwd")}
+        >
+            <h1 class="form-title">Reset Password</h1>
+            <div class="form-head">
+                <img
+                    src="../../../static/icon/cross.png"
+                    alt="closing form"
+                    class="close_form"
+                    on:click={() => clearAllInputError("none")}
+                />
+            </div>
+            <div class="form-message" />
+
+            <div class="form-input-group">
+                <div class="form-input-group-icon">
+                    <img
+                        class="form-input-icon"
+                        src="../../../static/icon/mail.png"
+                        alt="Mail icon"
+                    />
+                    <input
+                        type="text"
+                        id="reset-mail"
+                        class="form-input"
+                        autofocus
+                        placeholder="Email address"
+                        on:blur={(event) => verify_input(event)}
+                        on:input={(event) => clearInputError(event.target)}
+                    />
+                </div>
+                <div class="form-input-error-message" />
+            </div>
+
+            <button
+                class="form-button"
+                id="reset-button"
+                type="submit"
+                class:active={$page.url.pathname === "/summary"}
+            >
+                Reset
+            </button>
+        </form>
+
         <form
             class={current_form === "register" ? "form" : "form form-hidden"}
             id="createAccount"
