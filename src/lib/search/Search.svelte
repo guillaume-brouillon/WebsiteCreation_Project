@@ -1,12 +1,50 @@
 <script>
   import { supabase } from "../../supabaseClient";
   import { courseID } from '$lib/sessionStore.js'
+
   let input;
   let course = 'none';
   let message = '';
 
-  const search = async (event) => {
+let tags=[];
+
+  function addTag(element) {
+	  tags = [...tags, element];
+  }
+
+  const availableTag = async () => {
     try {
+      message='';
+      let user = supabase.auth.user();
+      if (input.length >=4 && user) {
+        let { data } = await supabase.from("ClassInformation").select(`ID_Cours, Name_of_Class`).or(`ID_Cours.ilike.%${input.toUpperCase()}%, Name_of_Class.ilike.%${input}%`);
+        if (data.length > 0) {
+          let i =0;
+          tags=[];
+          data.forEach(element => {
+            if (i<5) {
+              if (element.ID_Cours.substring(0, input.length) === input.toUpperCase()) {
+                addTag({text : element.ID_Cours, id: element.ID_Cours})
+              } else {
+                addTag({text : element.Name_of_Class, id: element.ID_Cours})
+              }
+            }
+            i = i + 1
+          });
+        } else if (input.length <=3 && user) {
+          tags = [];
+        }
+      } else {
+        tags = [];
+      }
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
+  const search = async () => {
+    try {
+      tags=[];
       let user = supabase.auth.user();
       if (input && user) {
         let { data, error, status } = await supabase.from("ClassInformation").select(`ID_Cours`).or(`ID_Cours.eq.${input.toUpperCase()}`, `Name_of_Class.eq.${input}`).single();
@@ -29,16 +67,30 @@
         message='Select a course';
       }
     } catch (error) {
-        console.log(error.message);
-        alert(error.message);
+      console.log(error);
+    }
+  }
+
+  const handleEnter = (event) => {
+    if (event.key === 'Enter') {
+      search()
     }
   }
 
 </script>
 
 <div class="relative m-6">
-  <input type="text" class="bg-purple-white shadow rounded border-0 p-3 w-full" placeholder="Search course" bind:value="{input}">
-  <div class="absolute pin-r pin-t mt-3 mr-4 top-0 right-0 text-purple-lighter cursor-pointer" on:click="{(event) => search(event)}">
+  <input type="text" class="bg-purple-white placeholder-gray-700 text-dark shadow rounded border-2 border-gray-400 p-3 w-full" placeholder="Search course" bind:value="{input}" on:keypress="{(event) => handleEnter(event)}" on:input="{availableTag}">
+
+  <ul>
+    {#each tags as tag, i}
+      <li class="w-full cursor-pointer hover:bg-cyan-600 text-center" on:click="{() => {input = tag.id; tags=[]}}"> 
+        {tag.text}
+      </li>
+    {/each}
+  </ul> 
+
+  <div class="absolute pin-r pin-t mt-3 mr-4 top-0 right-0 text-purple-lighter cursor-pointer hover:scale-125" on:click="{(event) => search(event)}">
   	<svg version="1.1" class="h-4 text-dark" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	    viewBox="0 0 52.966 52.966" style="enable-background:new 0 0 52.966 52.966;" xml:space="preserve">
     	<path d="M51.704,51.273L36.845,35.82c3.79-3.801,6.138-9.041,6.138-14.82c0-11.58-9.42-21-21-21s-21,9.42-21,21s9.42,21,21,21
