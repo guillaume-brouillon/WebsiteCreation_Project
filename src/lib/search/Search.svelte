@@ -17,7 +17,7 @@ let tags=[];
       message='';
       let user = supabase.auth.user();
       if (input.length >=4 && user) {
-        let { data } = await supabase.from("ClassInformation").select(`ID_Cours, Name_of_Class`).or(`ID_Cours.ilike.%${input.toUpperCase()}%, Name_of_Class.ilike.%${input}%`);
+        let { data } = await supabase.from("ClassInformation").select(`ID_Cours, Name_of_Class`).or(`ID_Cours.ilike.%${input.toUpperCase()}%, Name_of_Class.ilike.%${input}%`).order('Name_of_Class', {ascending:true});
         if (data.length > 0) {
           let i =0;
           tags=[];

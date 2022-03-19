@@ -61,7 +61,7 @@
     IdClass: classIdRequested,
     Desirability: DesirabilityId,
     Status: StatusId,
-    AddToSemester: false,
+    AddTostTrimester: false,
   };
   }
   let user_class_info = default_user_info;
@@ -90,7 +90,7 @@
 
         if (data) {
           user_class_info = data;
-          toggled = user_class_info.AddToSemester;
+          toggled = user_class_info.AddToTrimester;
           DesirabilityId = user_class_info.Desirability;
           StatusId = user_class_info.Status;
         } else {
@@ -245,9 +245,9 @@ return {};
             : 'togglepaddingSmall'
           : 'togglepaddingNoToggle'} {StatusId < 2 ? 'shown' : 'vishidden'}"
         bind:toggled
-        on:toggle={ModifyTable({ AddToSemester: toggled })}
-        labelA="This Semester"
-        labelB="Not this semester"
+        on:toggle={ModifyTable({ AddToTrimester: toggled })}
+        labelA="This Trimester"
+        labelB="Not this Trimester"
       />
     </div>
   </div>
