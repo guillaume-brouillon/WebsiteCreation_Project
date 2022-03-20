@@ -133,7 +133,7 @@
 			</li>
 		</ul>
 	</nav>
-	<button class="custombutton ml-auto mt-auto mb-auto mr-5 w-28" on:click="{logout}" >Log Out</button>
+	<a href="/" class=" ml-auto mt-auto mb-auto mr-5"><button class="custombutton w-28" on:click="{logout}" >Log Out</button></a>
 </header>
 {#if showerror}
 <InlineNotification 
