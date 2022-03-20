@@ -8,7 +8,7 @@
     Toggle,
   } from "carbon-components-svelte";
   import Search from "$lib/search/Search.svelte";
-  import { courseID } from "$lib/sessionStore";
+  import { courseID,Desirability,status } from "$lib/sessionStore";
 
   let classIdRequested = courseID;
   let class_info = { Outline: null };
@@ -31,24 +31,7 @@
   let open = false;
   let toggled = false;
 
-  let Desirability = [
-    { id: 0, text: "None" },
-    { id: 1, text: "Lowest" },
-    { id: 2, text: "Low" },
-    { id: 3, text: "Normal" },
-    { id: 4, text: "High" },
-    { id: 5, text: "Higher" },
-    { id: 6, text: "Highest" },
-    { id: 7, text: "Must Take" },
-    { id: 8, text: "Mandatory" },
-  ];
-  let status = [
-    { id: 0, text: "Not Taken" },
-    { id: 1, text: "Asked" },
-    { id: 2, text: "In Progress" },
-    { id: 3, text: "Failed" },
-    { id: 4, text: "Passed" },
-  ];
+  
 
   const user = supabase.auth.user();
   let DesirabilityId = 0;
@@ -155,7 +138,6 @@
         }
       }
   };
-
   courseID.subscribe(value => {
     classIdRequested = value;
     getClassInfo();
@@ -231,6 +213,14 @@
     }
   };
 
+  const updateDataUI  = () => {  
+  getClassInfo();
+    getClassInfoUser();
+    getTrackInfo();
+    getTeacherInfo();
+    getYearsTrimester();
+}
+  updateDataUI();
 </script>
 
 <script context="module">
@@ -241,8 +231,8 @@
     if (user == null) {
       return {status: 302, redirect: "/"};
     }
+    return {}
   };
-  updateDataUI();
 </script>
 
 <Header />
@@ -345,6 +335,7 @@
     </div>
   {/if}
 
+  {#if teachers != null && teachers.length != 0}
   <div
     class="containerClass bg-transparent"
     style="background-color: transparent;"
@@ -420,8 +411,7 @@
       </div>
     {/if}
   </div>
-  
-  {#if teachers != null && teachers.length != 0}
+  </div>
   {/if}
 </main>
 

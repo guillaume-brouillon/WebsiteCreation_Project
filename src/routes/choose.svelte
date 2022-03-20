@@ -16,6 +16,7 @@
 
 <script>
     import Header from "$lib/header/Header.svelte";
+    import SearchClass from "$lib/search/SearchClass.svelte";
   import { Tooltip, TooltipDefinition,AccordionItem,Accordion } from "carbon-components-svelte";
     import { onMount } from 'svelte';
     const askedCourse = async () => {
@@ -58,7 +59,7 @@
         }
     }
     }
-    import { courseID,selector,allclasses} from '$lib/sessionStore';
+    import { courseID,selector,allclasses,trackID} from '$lib/sessionStore';
     let classes = [];
     allclasses.subscribe((value)=>{classes = value;})
     import Search from '$lib/search/Search.svelte';
@@ -104,6 +105,7 @@
 </header>
 <main>
     <Search />
+    <SearchClass/>
     {#each visibleClasses as classe}
     <div class="listviewitem">
     <div class="flex">
