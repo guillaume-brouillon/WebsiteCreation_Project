@@ -1,108 +1,15 @@
 <script>
   import Header from "$lib/header/Header.svelte";
-  import {
-    Accordion,
-    AccordionItem,
-    Button,Tag,
-    Dropdown,
-    Toggle,
-  } from "carbon-components-svelte";
-  
+  import {Accordion, AccordionItem, Tag, Dropdown, Toggle} from "carbon-components-svelte";
   import Search from '$lib/search/Search.svelte';
   import { courseID } from '$lib/sessionStore';
   
   let classIdRequested;
   let class_info = { Outline: null };
-  let info = 'hidden';
-
-  courseID.subscribe(value => {
-      classIdRequested = value;
-      getClassInfo()
-      if (classIdRequested === 'none') {
-      info = 'hidden' 
-    }
-    else { 
-      info = 'shown'
-    }
-  });
-
-  let DesirabilityId = 0;
-  let StatusId = 0;
-  async function getClassInfo() {
-    if(classIdRequested !== 'none') {
-      try {
-        let user = supabase.auth.user();
-
-        let { data, error, status } = await supabase
-          .from("ClassInformation")
-          .select(`*`)
-          .eq("ID_Cours", classIdRequested)
-          .single();
-
-
-        if (error && status !== 406) throw error;
-
-        if (data) {
-          class_info = data;
-        }
-      } catch (error) {
-        console.log(error.message);
-        alert(error.message);
-      } 
-    } 
-  }
-  
-  const user = supabase.auth.user();
-  let default_user_info;
-  if(user){
-    default_user_info
- = {
-    IdUser: user.id,
-    IdClass: classIdRequested,
-    Desirability: DesirabilityId,
-    Status: StatusId,
-    AddTostTrimester: false,
-  };
-  }
-  let user_class_info = default_user_info;
-  async function createUserClassInfo() {
-    try {
-      let { error } = await supabase
-        .from("UserClassInfo")
-        .insert(default_user_info);
-    } catch (error) {
-      alert(error);
-    }
-  }
-  async function getClassInfoUser() {
-    if (classIdRequested != "none") {
-      try {
-        let user = supabase.auth.user();
-
-
-        let { data, error, status } = await supabase
-          .from("UserClassInfo")
-          .select(`*`)
-          .match({ IdUser: user.id, IdClass: classIdRequested })
-          .single();
-
-        if (error && status !== 406) throw error;
-
-        if (data) {
-          user_class_info = data;
-          toggled = user_class_info.AddToTrimester;
-          DesirabilityId = user_class_info.Desirability;
-          StatusId = user_class_info.Status;
-        } else {
-          user_class_info = default_user_info;
-          createUserClassInfo();
-        }
-      } catch (error) {
-        console.log(error.message);
-        alert(error.message);
-      }
-    }
-  }
+  let tracks = [{filliere:"none"}] ;
+  let teachers = [{Professeur:"none"}] ;
+  let profs = [{Professeur:"none"}];
+  let crenaux_lists = null;
 
   let property_name = [
     "Abstract",
@@ -134,87 +41,160 @@
     { id: 3, text: "Failed" },
     { id: 4, text: "Passed" },
   ];
-  async function ModifyTable(kv,table="UserClassInfo"){
-  try{
-    let user = supabase.auth.user();
-  const { data, error } = await supabase
-  .from(table)
-  .update(kv)
-  .match({ IdUser: user.id,IdClass:classIdRequested })
-  if(error) throw error;
-  }
-  catch(error){
-    alert(error.message)
+
+  const user = supabase.auth.user();
+  let DesirabilityId = 0;
+  let StatusId = 0;
+
+  const getClassInfo = async () => {
+    if(classIdRequested !== 'none') {
+      try {
+        const {data} = await supabase.from("ClassInformation").select(`*`).eq("ID_Cours", classIdRequested).single();
+        if (data) {
+          class_info = data;
+        }
+      } catch (error) {
+        alert(error.message);
+      } 
+    } 
   }
 
+  async function getClassInfoUser() {
+    if (classIdRequested != "none" && user) {
+      try {
+        const { data, status, error } = await supabase.from("UserClassInfo").select(`*`).match({ IdUser: user.id, IdClass: classIdRequested }).single();
+        if (error && status == 406) {
+          toggled = false;
+          DesirabilityId = 0;
+          StatusId = 0;
+        } else if (data) {
+          toggled = data.AddToTrimester;
+          DesirabilityId = data.Desirability;
+          StatusId = data.Status;
+        }
+      } catch (error) {
+          alert(error.message); 
+      }
+    }
   }
-  let tracks = [{filliere:"none"}] ;
-  async function getTrackInfo(){
+
+  const getTrackInfo = async () => {
     if (classIdRequested != "none") {
       try {
-        let user = supabase.auth.user();
-
-        let { data, error, status } = await supabase.rpc('get_track',{courside: classIdRequested})
-
-        if (error && status !== 406) throw error;
-
-        if (data) {
+        let { data, status } = await supabase.rpc('get_track', {courside: classIdRequested});
+        if (status == 406) {
+          tracks = [];
+        } else if (data) {
           tracks = data;
         }
       } catch (error) {
-        console.log(error.message);
         alert(error.message);
       }
     }
-}
-let crenaux_lists = null;
-async function getCrenauxInfo(){
-    if (classIdRequested != "none") {
-      try {
-        let user = supabase.auth.user();
+  }
 
-        let { data, error, status } = await supabase
-        .from("Crenaux")
-        .select("*")
-        .match({Course_ID: classIdRequested})
-
-        if (error && status !== 406) throw error;
-
-        if (data) {
-          crenaux_lists = data;
+  const getTeacherInfo = async () => {
+      if (classIdRequested != "none") {
+        try {
+          let { data, status } = await supabase.rpc('get_teacher', {courside: classIdRequested});
+          if (status == 406) {
+            teachers = [];
+          } else if (data) {
+            teachers = data;
+          }
+        } catch (error) {
+          alert(error.message);
         }
-      } catch (error) {
-        console.log(error.message);
-        alert(error.message);
+      }
+  }
+
+  courseID.subscribe(value => {
+    classIdRequested = value;
+    getClassInfo();
+    getClassInfoUser();
+    getTrackInfo();
+    getTeacherInfo();
+  });
+
+  const ModifyTable = async (kv) => {
+    if (classIdRequested != "none" && user) {
+      try{
+        let { error, status } = await supabase.from("UserClassInfo").select(`IdClass`).match({ IdUser: user.id, IdClass: classIdRequested }).single();
+        if( status == 406) {
+          await supabase.from("UserClassInfo").insert([{IdUser: user.id, IdClass: classIdRequested, Desirability: DesirabilityId, Status: StatusId, AddToTrimester: false}]);
+        }
+        await supabase.from("UserClassInfo").update(kv).match({ IdUser: user.id, IdClass:classIdRequested }).single()
+      } catch(error){
+        alert(error.message)
       }
     }
-}
+  }
+
+  const add_teacher = async (event) => {
+    event.target.parentElement.parentElement.childNodes.forEach(element => {
+      if (element.classList) { 
+        element.classList.remove("bg-cyan-200", "text-sky-900")
+      };
+    });
+    event.target.parentElement.classList.add("bg-cyan-200", "text-sky-900");
+    let teacher = event.target.innerText;
+    try {
+      const {data} = await supabase.from("InfoProf").select(`*`).eq(`Professeur`, teacher);
+      profs = data;
+      console.log(profs);
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
+  const getCrenauxInfo = async () => {
+      if (classIdRequested != "none") {
+        try {
+          let user = supabase.auth.user();
+
+          let { data, error, status } = await supabase
+          .from("Crenaux")
+          .select("*")
+          .match({Course_ID: classIdRequested})
+
+          if (error && status !== 406) throw error;
+
+          if (data) {
+            crenaux_lists = data;
+          }
+        } catch (error) {
+          alert(error.message);
+        }
+      }
+  }
+
+
+
 </script>
+
 <script context="module">
   import { supabase } from "../supabaseClient";
-let user = supabase.auth.user();
+  let user = supabase.auth.user();
+
   export async function load() {
-
-  if (user == null) {
-  
-          return {
-              status: 302,
-              redirect: "/"
-          };
+    if (user == null) {
+      return {status: 302, redirect: "/"};
+    }
+    return {};
   }
-return {};
-  }
-
 </script>
+
 <Header />
 <div>
   <Search />
 </div>
+
 <main
-  use:getClassInfo
+
   class="{classIdRequested === 'none' ? 'hidden' : 'shown'} w-full"
 >
-  <div style="background-color: var(--bandeau-color);" class="flex m-auto " use:getClassInfoUser>
+
+  <div style="background-color: var(--bandeau-color);" class="flex m-auto ">
     <div class="BarAcceptClass flex content-center flex-wrap">
       <Dropdown
         style="margin-left: 1rem"
@@ -251,6 +231,8 @@ return {};
       />
     </div>
   </div>
+
+
   <div class="flex flex-wrap containerClass">
     <div class="flex">
       {#if class_info.ID_Cours != null}
@@ -282,7 +264,7 @@ return {};
     </Accordion>
   </div>
 
-  <div class="containerClass bg-transparent" style="background-color: transparent;" use:getTrackInfo>
+  <div class="containerClass bg-transparent" style="background-color: transparent;">
     <p>Tracks</p>
   {#if tracks != null}
     {#each tracks as track}
@@ -290,10 +272,36 @@ return {};
     {/each}
   {/if}
   </div>
-  
+
+  <div class="containerClass bg-transparent" style="background-color: transparent;">
+    <p>Teachers</p>
+  {#if teachers != null}
+    {#each teachers as teacher}
+      <Tag class="cursor-pointer" on:click="{(event) => {add_teacher(event)}}">
+        {teacher.Professeur}
+      </Tag>
+    {/each}
+  {/if}
+
+  {#if profs != null && profs.Professeur != 'none'}
+    {#each profs as prof}
+      <div class="{prof.Professeur === 'none' ? "hidden" : "grid grid-cols-2 text-center justify-center"} ">
+        <div>Teacher pedagogy</div>
+        <div>{prof.PedagogicalGradeOn10}</div>
+        <div>Course grade</div>
+        <div>{prof.CourseGradeOn10}</div>
+        <div>Average bet points</div>
+        <div>{prof.AverageBetPoints}</div>
+        <div>Number of opinions</div>
+        <div>{prof.NbOpinion}</div>
+      </div>
+    {/each}
+  {/if}
+
   <div  class="containerClass">
 
   </div>
+
 </main>
 
 <style>

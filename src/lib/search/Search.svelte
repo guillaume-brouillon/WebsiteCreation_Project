@@ -84,7 +84,7 @@ let tags=[];
 
   <ul>
     {#each tags as tag, i}
-      <li class="w-full cursor-pointer hover:bg-cyan-600 text-center" on:click="{() => {input = tag.id; tags=[]}}"> 
+      <li class="w-full cursor-pointer hover:bg-cyan-600 text-center" on:click="{() => {input = tag.id; search()}}"> 
         {tag.text}
       </li>
     {/each}

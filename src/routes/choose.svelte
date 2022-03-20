@@ -31,10 +31,24 @@
             alert(error.message);
         }
     }
+
+    import { courseID } from '$lib/sessionStore';
+    import Search from '$lib/search/Search.svelte';
+  
+    let classIdRequested;
+
+    courseID.subscribe(value => {
+        classIdRequested = value;
+    });
 </script>
 
 <main>
     <Header />
     <button on:click="{() => askedCourse()}">Click</button>
+    <button on:click="{() => get_track_data()}">Click</button>
 
 </main>
+<div>
+    <Search />
+    {classIdRequested}
+  </div>
