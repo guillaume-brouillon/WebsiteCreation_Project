@@ -9,7 +9,6 @@
 	import { onMount } from "svelte";
 	let errormessage = "";
 	let showerror = false;
-	//window.$ = window.jQuery = jQuery; '../../../static/icon/edu.png'
 	let navigation_open = false;
 
 	var waitForFinalEvent = (function () {
@@ -46,7 +45,6 @@
 			});
 		});
 	});
-	//
 
 	function reveal_nav_pannel() {
 		if (!navigation_open) {
@@ -105,14 +103,6 @@
 			<h1 class="h-auto">My Classes</h1>
 		</div>
 		<ul id="navigationlinks">
-<!--
-			<li class:active={$page.url.pathname === "/"}>
-				<a  href="/">Home</a>
-				<a sveltekit:prefetch href="/choose" class="filler"
-					>Choose your classes</a
-				>
-			</li>
--->
 			<li class:active={$page.url.pathname === "/summary" || $page.url.pathname === "/" }>
 				<a sveltekit:prefetch href="/summary">My Summary</a>
 				<a sveltekit:prefetch href="/choose" class="filler"

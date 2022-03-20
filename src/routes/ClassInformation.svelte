@@ -240,7 +240,7 @@
   <Search />
 </div>
 
-<main style="{classIdRequested === 'none' ? 'hidden' : 'shown'} w-full">
+<main style="display : {classIdRequested === 'none' ? 'none' : 'block'}" class="w-full">
 
   <div style="background-color: var(--bandeau-color);" class="flex m-auto ">
     <div class="BarAcceptClass flex content-center flex-wrap">
@@ -274,8 +274,8 @@
           : 'togglepaddingNoToggle'} {StatusId < 2 ? 'shown' : 'vishidden'}"
         bind:toggled
         on:toggle={ModifyTable({ AddToTrimester: toggled })}
-        labelA="Choose this Trimester"
-        labelB="Not choose this Trimester"
+        labelA="Choose this trimester"
+        labelB="Not choose this trimester"
       />
     </div>
   </div>
