@@ -63,10 +63,10 @@
     allclasses.subscribe((value)=>{classes = value;})
     import Search from '$lib/search/Search.svelte';
   
-    let classIdRequested;
+    let trackIdRequested;
 
-    courseID.subscribe(value => {
-        classIdRequested = value;
+    trackID.subscribe(value => {
+        trackIdRequested = value;
     });
 	let search = undefined;
     $: visibleClasses = search ?

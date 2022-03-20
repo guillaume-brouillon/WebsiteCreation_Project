@@ -1,15 +1,3 @@
-<script context="module">
-  import { supabase } from "../supabaseClient";
-  let user = supabase.auth.user();
-/*
-  export async function load() {
-    if (user == null) {
-      return { status: 302, redirect: "/" };
-    }
-    return {};
-  }*/
-</script>
-
 <script>
   import Header from "$lib/header/Header.svelte";
   import {
@@ -28,6 +16,8 @@
   let teachers = [{ Professeur: "none" }];
   let profs = [{ Professeur: "none" }];
   let crenaux_lists = null;
+  let years = [{id: 0, text:'None'}];
+  let trimesters = [{id: 0, text:'None'}];
 
   let property_name = [
     "Abstract",
@@ -63,6 +53,8 @@
   const user = supabase.auth.user();
   let DesirabilityId = 0;
   let StatusId = 0;
+  let YearId = 0;
+  let TrimesterId = 0;
 
   const getClassInfo = async () => {
     if (classIdRequested !== "none") {
@@ -135,18 +127,42 @@
       } catch (error) {
         alert(error.message);
       }
-    }
+  }
+};
+ 
+  const getYearsTrimester = async () => {
+    if (classIdRequested != "none") {
+        try {
+          let { data, status } = await supabase.rpc('get_years_trimester', {courside: classIdRequested});
+          let i = 1;
+          let j = 1;
+          let year_possibility = [];
+          let trimester_possibility = [];
+          data.forEach(element => {
+            if (!year_possibility.includes(element.Year)) {
+              year_possibility = [...year_possibility, element.Year]
+              years = [...years, {id:i, text: element.Year}]
+              i++
+            }
+            if (!trimester_possibility.includes(element.Trimester)) {
+              trimester_possibility = [...trimester_possibility, element.Trimester]
+              trimesters = [...trimesters, {id: j, text:element.Trimester}]
+              j++
+            }
+          });
+        } catch (error) {
+          alert(error.message);
+        }
+      }
   };
-const updateDataUI = () => {
-  
-  getClassInfo();
+
+  courseID.subscribe(value => {
+    classIdRequested = value;
+    getClassInfo();
     getClassInfoUser();
     getTrackInfo();
     getTeacherInfo();
-}
-  courseID.subscribe((value) => {
-    classIdRequested = value;
-    updateDataUI();
+    getYearsTrimester();
   });
 
   const ModifyTable = async (kv) => {
@@ -195,30 +211,35 @@ const updateDataUI = () => {
         .select(`*`)
         .eq(`Professeur`, teacher);
       profs = data;
-      console.log(profs);
     } catch (error) {
-      console.log(error.message);
+      alert(error.message);
     }
   };
 
   const getCrenauxInfo = async () => {
-    if (classIdRequested != "none") {
+    if (classIdRequested != "none" && YearId > 0 && TrimesterId > 0) {
       try {
-        let user = supabase.auth.user();
-
-        let { data, error, status } = await supabase
-          .from("Crenaux")
-          .select("*")
-          .match({ Course_ID: classIdRequested });
-
-        if (error && status !== 406) throw error;
-
-        if (data) {
+        let { data, status } = await supabase.from("Crenaux").select("*").match({Course_ID: classIdRequested, Année: years[YearId].text, Trimestre: trimesters[TrimesterId].text});
+        if (status == 406) {
+          crenaux_lists = [];
+        } else if (data) {
           crenaux_lists = data;
         }
       } catch (error) {
         alert(error.message);
       }
+    }
+  };
+
+</script>
+
+<script context="module">
+  import { supabase } from "../supabaseClient";
+  let user = supabase.auth.user();
+
+  export async function load() {
+    if (user == null) {
+      return {status: 302, redirect: "/"};
     }
   };
   updateDataUI();
@@ -229,7 +250,8 @@ const updateDataUI = () => {
   <Search />
 </div>
 
-<main class="{classIdRequested === 'none' ? 'hidden' : 'shown'} w-full" use:updateDataUI>
+<main style="{classIdRequested === 'none' ? 'hidden' : 'shown'} w-full">
+
   <div style="background-color: var(--bandeau-color);" class="flex m-auto ">
     <div class="BarAcceptClass flex content-center flex-wrap">
       <Dropdown
@@ -262,8 +284,8 @@ const updateDataUI = () => {
           : 'togglepaddingNoToggle'} {StatusId < 2 ? 'shown' : 'vishidden'}"
         bind:toggled
         on:toggle={ModifyTable({ AddToTrimester: toggled })}
-        labelA="This Trimester"
-        labelB="Not this Trimester"
+        labelA="Choose this Trimester"
+        labelB="Not choose this Trimester"
       />
     </div>
   </div>
@@ -323,7 +345,6 @@ const updateDataUI = () => {
     </div>
   {/if}
 
-  {#if teachers != null && teachers.length != 0}
   <div
     class="containerClass bg-transparent"
     style="background-color: transparent;"
@@ -340,27 +361,67 @@ const updateDataUI = () => {
         </Tag>
       {/each}
 
-    {#if profs != null && profs.Professeur != "none"}
-      {#each profs as prof}
-        <div
-          class="{prof.Professeur === 'none'
-            ? 'hidden'
-            : 'grid grid-cols-2 text-center justify-center'} "
-        >
-          <div>Teacher pedagogy</div>
-          <div>{prof.PedagogicalGradeOn10}</div>
-          <div>Course grade</div>
-          <div>{prof.CourseGradeOn10}</div>
-          <div>Average bet points</div>
-          <div>{prof.AverageBetPoints}</div>
-          <div>Number of opinions</div>
-          <div>{prof.NbOpinion}</div>
-        </div>
-      {/each}
-    {/if}
+  {#if profs != null && profs.Professeur != 'none'}
+    {#each profs as prof}
+      <div class={prof.Professeur === 'none' ? "hidden" : "grid grid-cols-2 text-center justify-center"}>
+        <div>Teacher pedagogy</div>
+        <div>{prof.PedagogicalGradeOn10}</div>
+        <div>Course grade</div>
+        <div>{prof.CourseGradeOn10}</div>
+        <div>Average bet points</div>
+        <div>{prof.AverageBetPoints}</div>
+        <div>Number of opinions</div>
+        <div>{prof.NbOpinion}</div>
+      </div>
+    {/each}
+  {/if}
 
-    <div class="containerClass" />
+  <div class="containerClass bg-transparent flex" style="background-color: transparent;">
+    <p class="align-text-bottom">Classes</p>
+    <div  class="BarAcceptClass flex content-center flex-wrap containerClass" style="background-color: transparent;">
+      <Dropdown
+      style="margin-left: 1rem"
+      type="inline"
+      light
+      titleText="Year"
+      bind:selectedId={YearId}
+      items={years}
+      class="VerticalAligned"
+      on:select={getCrenauxInfo}
+      />
+
+      <Dropdown
+      style="margin-left: 1rem"
+      type="inline"
+      light
+      titleText="Trimester"
+      bind:selectedId={TrimesterId}
+      items={trimesters}
+      class="VerticalAligned"
+      on:select={getCrenauxInfo}
+      />
+    </div>
   </div>
+
+  <div class="containerClass bg-transparent" style="background-color: transparent;">
+    {#if crenaux_lists != null}
+      <p>Dates</p>
+      <div class="grid grid-cols-4 text-center justify-center">
+        <div>Day</div>
+        <div>Hours</div>
+        <div>CRN</div>
+        <div>Teacher</div>
+        {#each crenaux_lists as cre}
+          <div>{cre.Jour}</div>
+          <div>{cre.Crénaux}</div>
+          <div>{cre.CNR}</div>
+          <div>{cre.Professeur}</div>
+        {/each}
+      </div>
+    {/if}
+  </div>
+  
+  {#if teachers != null && teachers.length != 0}
   {/if}
 </main>
 

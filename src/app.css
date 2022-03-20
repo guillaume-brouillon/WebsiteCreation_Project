@@ -1,5 +1,6 @@
 @import '@fontsource/fira-mono';
 @import "carbon-components-svelte/css/all.css";
+@import url('https://fonts.googleapis.com/css2?family=Lora&family=Space+Mono&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -75,9 +76,6 @@ body::before {
 	display: flex;
 	flex-direction: column;
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Lora&family=Space+Mono&display=swap');
-
 
 button.custombutton{
 	/* Accent / Default */

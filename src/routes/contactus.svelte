@@ -88,14 +88,25 @@
                 invalid={$errors.message.length > 0} invalidText={$errors.message}/>
         </FormGroup>
 
+        <div>
+            <Button type="submit" class="button" disabled={$isSubmitting}>Submit</Button>
+        </div>
 
-        <Button type="submit" disabled={$isSubmitting}>Submit</Button>
     </Form>
 </div>
 
 <style>
     .page {
         margin: 40px;
+    }
+
+    div :global(.button) {
+    background-color:  var(--color-primary-dark);
+    }
+
+    div :global(.button):hover {
+    background-color: var(--tertiary-color);
+    transform: scale(1.1);
     }
 </style>
 
