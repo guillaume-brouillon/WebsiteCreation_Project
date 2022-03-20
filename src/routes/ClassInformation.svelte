@@ -10,6 +10,8 @@
   let teachers = [{Professeur:"none"}] ;
   let profs = [{Professeur:"none"}];
   let crenaux_lists = null;
+  let years = [{id: 0, text:'None'}];
+  let trimesters = [{id: 0, text:'None'}];
 
   let property_name = [
     "Abstract",
@@ -45,6 +47,8 @@
   const user = supabase.auth.user();
   let DesirabilityId = 0;
   let StatusId = 0;
+  let YearId = 0;
+  let TrimesterId = 0;
 
   const getClassInfo = async () => {
     if(classIdRequested !== 'none') {
@@ -108,12 +112,39 @@
       }
   }
 
+  const getYearsTrimester = async () => {
+    if (classIdRequested != "none") {
+        try {
+          let { data, status } = await supabase.rpc('get_years_trimester', {courside: classIdRequested});
+          let i = 1;
+          let j = 1;
+          let year_possibility = [];
+          let trimester_possibility = [];
+          data.forEach(element => {
+            if (!year_possibility.includes(element.Year)) {
+              year_possibility = [...year_possibility, element.Year]
+              years = [...years, {id:i, text: element.Year}]
+              i++
+            }
+            if (!trimester_possibility.includes(element.Trimester)) {
+              trimester_possibility = [...trimester_possibility, element.Trimester]
+              trimesters = [...trimesters, {id: j, text:element.Trimester}]
+              j++
+            }
+          });
+        } catch (error) {
+          alert(error.message);
+        }
+      }
+  }
+
   courseID.subscribe(value => {
     classIdRequested = value;
     getClassInfo();
     getClassInfoUser();
     getTrackInfo();
     getTeacherInfo();
+    getYearsTrimester();
   });
 
   const ModifyTable = async (kv) => {
@@ -125,7 +156,7 @@
         }
         await supabase.from("UserClassInfo").update(kv).match({ IdUser: user.id, IdClass:classIdRequested }).single()
       } catch(error){
-        alert(error.message)
+        alert(error.message);
       }
     }
   }
@@ -141,34 +172,26 @@
     try {
       const {data} = await supabase.from("InfoProf").select(`*`).eq(`Professeur`, teacher);
       profs = data;
-      console.log(profs);
     } catch (error) {
-      console.log(error.message);
+      alert(error.message);
     }
   }
 
   const getCrenauxInfo = async () => {
-      if (classIdRequested != "none") {
-        try {
-          let user = supabase.auth.user();
-
-          let { data, error, status } = await supabase
-          .from("Crenaux")
-          .select("*")
-          .match({Course_ID: classIdRequested})
-
-          if (error && status !== 406) throw error;
-
-          if (data) {
-            crenaux_lists = data;
-          }
-        } catch (error) {
-          alert(error.message);
+    if (classIdRequested != "none" && YearId > 0 && TrimesterId > 0) {
+      try {
+        let { data, status } = await supabase.from("Crenaux").select("*").match({Course_ID: classIdRequested, Année: years[YearId].text, Trimestre: trimesters[TrimesterId].text});
+        if (status == 406) {
+          crenaux_lists = [];
+        } else if (data) {
+          crenaux_lists = data;
         }
+        console.log(crenaux_lists);
+      } catch (error) {
+        alert(error.message);
       }
+    }
   }
-
-
 
 </script>
 
@@ -189,10 +212,7 @@
   <Search />
 </div>
 
-<main
-
-  class="{classIdRequested === 'none' ? 'hidden' : 'shown'} w-full"
->
+<main style="{classIdRequested === 'none' ? 'hidden' : 'shown'} w-full">
 
   <div style="background-color: var(--bandeau-color);" class="flex m-auto ">
     <div class="BarAcceptClass flex content-center flex-wrap">
@@ -226,8 +246,8 @@
           : 'togglepaddingNoToggle'} {StatusId < 2 ? 'shown' : 'vishidden'}"
         bind:toggled
         on:toggle={ModifyTable({ AddToTrimester: toggled })}
-        labelA="This Trimester"
-        labelB="Not this Trimester"
+        labelA="Choose this Trimester"
+        labelB="Not choose this Trimester"
       />
     </div>
   </div>
@@ -298,8 +318,49 @@
     {/each}
   {/if}
 
-  <div  class="containerClass">
+  <div class="containerClass bg-transparent flex" style="background-color: transparent;">
+    <p class="align-text-bottom">Classes</p>
+    <div  class="BarAcceptClass flex content-center flex-wrap containerClass" style="background-color: transparent;">
+      <Dropdown
+      style="margin-left: 1rem"
+      type="inline"
+      light
+      titleText="Year"
+      bind:selectedId={YearId}
+      items={years}
+      class="VerticalAligned"
+      on:select={getCrenauxInfo}
+      />
 
+      <Dropdown
+      style="margin-left: 1rem"
+      type="inline"
+      light
+      titleText="Trimester"
+      bind:selectedId={TrimesterId}
+      items={trimesters}
+      class="VerticalAligned"
+      on:select={getCrenauxInfo}
+      />
+    </div>
+  </div>
+
+  <div class="containerClass bg-transparent" style="background-color: transparent;">
+    {#if crenaux_lists != null}
+      <p>Dates</p>
+      <div class="grid grid-cols-4 text-center justify-center">
+        <div>Day</div>
+        <div>Hours</div>
+        <div>CRN</div>
+        <div>Teacher</div>
+        {#each crenaux_lists as cre}
+          <div>{cre.Jour}</div>
+          <div>{cre.Crénaux}</div>
+          <div>{cre.CNR}</div>
+          <div>{cre.Professeur}</div>
+        {/each}
+      </div>
+    {/if}
   </div>
 
 </main>
