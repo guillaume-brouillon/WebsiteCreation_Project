@@ -5,7 +5,8 @@
     "dev": "svelte-kit dev",
     "build": "svelte-kit build",
     "package": "svelte-kit package",
-    "preview": "svelte-kit preview"
+    "preview": "svelte-kit preview",
+    "debug": "npm run dev -- --open"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "next",
@@ -24,6 +25,7 @@
     "cookie": "^0.4.1",
     "jquery": "^3.6.0",
     "svelte-forms-lib": "^2.0.1",
+    "svelte-sortable-flat-list-view": "^1.0.0",
     "yup": "^0.32.11"
   }
 }

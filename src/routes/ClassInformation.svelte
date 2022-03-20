@@ -1,14 +1,32 @@
+<script context="module">
+  import { supabase } from "../supabaseClient";
+  let user = supabase.auth.user();
+/*
+  export async function load() {
+    if (user == null) {
+      return { status: 302, redirect: "/" };
+    }
+    return {};
+  }*/
+</script>
+
 <script>
   import Header from "$lib/header/Header.svelte";
-  import {Accordion, AccordionItem, Tag, Dropdown, Toggle} from "carbon-components-svelte";
-  import Search from '$lib/search/Search.svelte';
-  import { courseID } from '$lib/sessionStore';
-  
-  let classIdRequested;
+  import {
+    Accordion,
+    AccordionItem,
+    Tag,
+    Dropdown,
+    Toggle,
+  } from "carbon-components-svelte";
+  import Search from "$lib/search/Search.svelte";
+  import { courseID } from "$lib/sessionStore";
+
+  let classIdRequested = courseID;
   let class_info = { Outline: null };
-  let tracks = [{filliere:"none"}] ;
-  let teachers = [{Professeur:"none"}] ;
-  let profs = [{Professeur:"none"}];
+  let tracks = [{ filliere: "none" }];
+  let teachers = [{ Professeur: "none" }];
+  let profs = [{ Professeur: "none" }];
   let crenaux_lists = null;
 
   let property_name = [
@@ -47,22 +65,30 @@
   let StatusId = 0;
 
   const getClassInfo = async () => {
-    if(classIdRequested !== 'none') {
+    if (classIdRequested !== "none") {
       try {
-        const {data} = await supabase.from("ClassInformation").select(`*`).eq("ID_Cours", classIdRequested).single();
+        const { data } = await supabase
+          .from("ClassInformation")
+          .select(`*`)
+          .eq("ID_Cours", classIdRequested)
+          .single();
         if (data) {
           class_info = data;
         }
       } catch (error) {
         alert(error.message);
-      } 
-    } 
-  }
+      }
+    }
+  };
 
   async function getClassInfoUser() {
     if (classIdRequested != "none" && user) {
       try {
-        const { data, status, error } = await supabase.from("UserClassInfo").select(`*`).match({ IdUser: user.id, IdClass: classIdRequested }).single();
+        const { data, status, error } = await supabase
+          .from("UserClassInfo")
+          .select(`*`)
+          .match({ IdUser: user.id, IdClass: classIdRequested })
+          .single();
         if (error && status == 406) {
           toggled = false;
           DesirabilityId = 0;
@@ -73,7 +99,7 @@
           StatusId = data.Status;
         }
       } catch (error) {
-          alert(error.message); 
+        alert(error.message);
       }
     }
   }
@@ -81,7 +107,9 @@
   const getTrackInfo = async () => {
     if (classIdRequested != "none") {
       try {
-        let { data, status } = await supabase.rpc('get_track', {courside: classIdRequested});
+        let { data, status } = await supabase.rpc("get_track", {
+          courside: classIdRequested,
+        });
         if (status == 406) {
           tracks = [];
         } else if (data) {
@@ -91,97 +119,109 @@
         alert(error.message);
       }
     }
-  }
+  };
 
   const getTeacherInfo = async () => {
-      if (classIdRequested != "none") {
-        try {
-          let { data, status } = await supabase.rpc('get_teacher', {courside: classIdRequested});
-          if (status == 406) {
-            teachers = [];
-          } else if (data) {
-            teachers = data;
-          }
-        } catch (error) {
-          alert(error.message);
+    if (classIdRequested != "none") {
+      try {
+        let { data, status } = await supabase.rpc("get_teacher", {
+          courside: classIdRequested,
+        });
+        if (status == 406) {
+          teachers = [];
+        } else if (data) {
+          teachers = data;
         }
+      } catch (error) {
+        alert(error.message);
       }
-  }
-
-  courseID.subscribe(value => {
-    classIdRequested = value;
-    getClassInfo();
+    }
+  };
+const updateDataUI = () => {
+  
+  getClassInfo();
     getClassInfoUser();
     getTrackInfo();
     getTeacherInfo();
+}
+  courseID.subscribe((value) => {
+    classIdRequested = value;
+    updateDataUI();
   });
 
   const ModifyTable = async (kv) => {
     if (classIdRequested != "none" && user) {
-      try{
-        let { error, status } = await supabase.from("UserClassInfo").select(`IdClass`).match({ IdUser: user.id, IdClass: classIdRequested }).single();
-        if( status == 406) {
-          await supabase.from("UserClassInfo").insert([{IdUser: user.id, IdClass: classIdRequested, Desirability: DesirabilityId, Status: StatusId, AddToTrimester: false}]);
+      try {
+        let { error, status } = await supabase
+          .from("UserClassInfo")
+          .select(`IdClass`)
+          .match({ IdUser: user.id, IdClass: classIdRequested })
+          .single();
+        if (status == 406) {
+          await supabase
+            .from("UserClassInfo")
+            .insert([
+              {
+                IdUser: user.id,
+                IdClass: classIdRequested,
+                Desirability: DesirabilityId,
+                Status: StatusId,
+                AddToTrimester: false,
+              },
+            ]);
         }
-        await supabase.from("UserClassInfo").update(kv).match({ IdUser: user.id, IdClass:classIdRequested }).single()
-      } catch(error){
-        alert(error.message)
+        await supabase
+          .from("UserClassInfo")
+          .update(kv)
+          .match({ IdUser: user.id, IdClass: classIdRequested })
+          .single();
+      } catch (error) {
+        alert(error.message);
       }
     }
-  }
+  };
 
   const add_teacher = async (event) => {
-    event.target.parentElement.parentElement.childNodes.forEach(element => {
-      if (element.classList) { 
-        element.classList.remove("bg-cyan-200", "text-sky-900")
-      };
+    event.target.parentElement.parentElement.childNodes.forEach((element) => {
+      if (element.classList) {
+        element.classList.remove("bg-cyan-200", "text-sky-900");
+      }
     });
     event.target.parentElement.classList.add("bg-cyan-200", "text-sky-900");
     let teacher = event.target.innerText;
     try {
-      const {data} = await supabase.from("InfoProf").select(`*`).eq(`Professeur`, teacher);
+      const { data } = await supabase
+        .from("InfoProf")
+        .select(`*`)
+        .eq(`Professeur`, teacher);
       profs = data;
       console.log(profs);
     } catch (error) {
       console.log(error.message);
     }
-  }
+  };
 
   const getCrenauxInfo = async () => {
-      if (classIdRequested != "none") {
-        try {
-          let user = supabase.auth.user();
+    if (classIdRequested != "none") {
+      try {
+        let user = supabase.auth.user();
 
-          let { data, error, status } = await supabase
+        let { data, error, status } = await supabase
           .from("Crenaux")
           .select("*")
-          .match({Course_ID: classIdRequested})
+          .match({ Course_ID: classIdRequested });
 
-          if (error && status !== 406) throw error;
+        if (error && status !== 406) throw error;
 
-          if (data) {
-            crenaux_lists = data;
-          }
-        } catch (error) {
-          alert(error.message);
+        if (data) {
+          crenaux_lists = data;
         }
+      } catch (error) {
+        alert(error.message);
       }
-  }
-
-
-
-</script>
-
-<script context="module">
-  import { supabase } from "../supabaseClient";
-  let user = supabase.auth.user();
-
-  export async function load() {
-    if (user == null) {
-      return {status: 302, redirect: "/"};
     }
-    return {};
-  }
+  };
+  updateDataUI();
 </script>
 
 <Header />
@@ -189,11 +229,7 @@
   <Search />
 </div>
 
-<main
-
-  class="{classIdRequested === 'none' ? 'hidden' : 'shown'} w-full"
->
-
+<main class="{classIdRequested === 'none' ? 'hidden' : 'shown'} w-full" use:updateDataUI>
   <div style="background-color: var(--bandeau-color);" class="flex m-auto ">
     <div class="BarAcceptClass flex content-center flex-wrap">
       <Dropdown
@@ -232,7 +268,6 @@
     </div>
   </div>
 
-
   <div class="flex flex-wrap containerClass">
     <div class="flex">
       {#if class_info.ID_Cours != null}
@@ -247,6 +282,18 @@
       <div class="flex">
         <p>Responsable :</p>
         <p>{class_info != null ? class_info.Responsable : ""}</p>
+      </div>
+    {/if}
+    {#if class_info.UV != null}
+      <div class="flex">
+        <p>UV :</p>
+        <p>{class_info != null ? class_info.UV : ""}</p>
+      </div>
+    {/if}
+    {#if class_info.Language != null}
+      <div class="flex">
+        <p>Language :</p>
+        <p>{class_info != null ? class_info.Language : ""}</p>
       </div>
     {/if}
   </div>
@@ -264,44 +311,57 @@
     </Accordion>
   </div>
 
-  <div class="containerClass bg-transparent" style="background-color: transparent;">
-    <p>Tracks</p>
-  {#if tracks != null}
-    {#each tracks as track}
-      <Tag>{track.filliere}</Tag>
-    {/each}
+  {#if tracks != null && tracks.length != 0}
+    <div
+      class="containerClass bg-transparent"
+      style="background-color: transparent;"
+    >
+      <p>Tracks</p>
+      {#each tracks as track}
+        <Tag>{track.filliere}</Tag>
+      {/each}
+    </div>
   {/if}
-  </div>
 
-  <div class="containerClass bg-transparent" style="background-color: transparent;">
+  {#if teachers != null && teachers.length != 0}
+  <div
+    class="containerClass bg-transparent"
+    style="background-color: transparent;"
+  >
     <p>Teachers</p>
-  {#if teachers != null}
-    {#each teachers as teacher}
-      <Tag class="cursor-pointer" on:click="{(event) => {add_teacher(event)}}">
-        {teacher.Professeur}
-      </Tag>
-    {/each}
-  {/if}
+      {#each teachers as teacher}
+        <Tag
+          class="cursor-pointer"
+          on:click={(event) => {
+            add_teacher(event);
+          }}
+        >
+          {teacher.Professeur}
+        </Tag>
+      {/each}
 
-  {#if profs != null && profs.Professeur != 'none'}
-    {#each profs as prof}
-      <div class="{prof.Professeur === 'none' ? "hidden" : "grid grid-cols-2 text-center justify-center"} ">
-        <div>Teacher pedagogy</div>
-        <div>{prof.PedagogicalGradeOn10}</div>
-        <div>Course grade</div>
-        <div>{prof.CourseGradeOn10}</div>
-        <div>Average bet points</div>
-        <div>{prof.AverageBetPoints}</div>
-        <div>Number of opinions</div>
-        <div>{prof.NbOpinion}</div>
-      </div>
-    {/each}
-  {/if}
+    {#if profs != null && profs.Professeur != "none"}
+      {#each profs as prof}
+        <div
+          class="{prof.Professeur === 'none'
+            ? 'hidden'
+            : 'grid grid-cols-2 text-center justify-center'} "
+        >
+          <div>Teacher pedagogy</div>
+          <div>{prof.PedagogicalGradeOn10}</div>
+          <div>Course grade</div>
+          <div>{prof.CourseGradeOn10}</div>
+          <div>Average bet points</div>
+          <div>{prof.AverageBetPoints}</div>
+          <div>Number of opinions</div>
+          <div>{prof.NbOpinion}</div>
+        </div>
+      {/each}
+    {/if}
 
-  <div  class="containerClass">
-
+    <div class="containerClass" />
   </div>
-
+  {/if}
 </main>
 
 <style>
