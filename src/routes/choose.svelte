@@ -14,7 +14,7 @@
 
 <script>
     import Header from "$lib/header/Header.svelte";
-
+/*
     const askedCourse = async () => {
         try{
             let user = supabase.auth.user();
@@ -31,24 +31,22 @@
             alert(error.message);
         }
     }
-
-    import { courseID } from '$lib/sessionStore';
-    import Search from '$lib/search/Search.svelte';
+*/
+    import { trackID } from '$lib/sessionStore';
+    import SearchTrack from '$lib/search/SearchTrack.svelte';
   
-    let classIdRequested;
+    let trackIdRequested;
 
-    courseID.subscribe(value => {
-        classIdRequested = value;
+    trackID.subscribe(value => {
+        trackIdRequested = value;
     });
 </script>
 
 <main>
     <Header />
-    <button on:click="{() => askedCourse()}">Click</button>
-    <button on:click="{() => get_track_data()}">Click</button>
 
 </main>
 <div>
-    <Search />
-    {classIdRequested}
+    <SearchTrack />
+    {trackIdRequested}
   </div>

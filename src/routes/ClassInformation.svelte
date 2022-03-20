@@ -186,7 +186,6 @@
         } else if (data) {
           crenaux_lists = data;
         }
-        console.log(crenaux_lists);
       } catch (error) {
         alert(error.message);
       }

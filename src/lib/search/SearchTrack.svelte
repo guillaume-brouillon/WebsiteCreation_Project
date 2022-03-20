@@ -1,9 +1,9 @@
 <script>
   import { supabase } from "../../supabaseClient";
-  import { courseID } from '$lib/sessionStore.js'
+  import { trackID } from '$lib/sessionStore.js'
 
   let input;
-  let course = 'none';
+  let track = 'none';
   let message = '';
 
   let tags=[];
@@ -16,22 +16,18 @@
     try {
       message='';
       let user = supabase.auth.user();
-      if (input.length >=4 && user) {
-        let { data } = await supabase.from("ClassInformation").select(`ID_Cours, Name_of_Class`).or(`ID_Cours.ilike.%${input.toUpperCase()}%, Name_of_Class.ilike.%${input}%`).order('Name_of_Class', {ascending:true});
-        if (data.length > 0) {
+      if (input.length >=2 && user) {
+        let { data } = await supabase.from("TracksInfo").select(`Nom`).ilike("Nom",`%${input}%`).order('Nom', {ascending:true});
+        if (data) {
           let i =0;
           tags=[];
           data.forEach(element => {
             if (i<5) {
-              if (element.ID_Cours.substring(0, input.length) === input.toUpperCase()) {
-                addTag({text : element.ID_Cours, id: element.ID_Cours})
-              } else {
-                addTag({text : element.Name_of_Class, id: element.ID_Cours})
-              }
+              addTag({text : element.Nom})
             }
             i = i + 1
           });
-        } else if (input.length <=3 && user) {
+        } else if (input.length <=1 && user) {
           tags = [];
         }
       } else {
@@ -47,24 +43,24 @@
       tags=[];
       let user = supabase.auth.user();
       if (input && user) {
-        let { data, error, status } = await supabase.from("ClassInformation").select(`ID_Cours`).or(`ID_Cours.eq.${input.toUpperCase()}`, `Name_of_Class.eq.${input}`).single();
+        let { data, error, status } = await supabase.from("TracksInfo").select("Nom").ilike("Nom",`%${input}%`).single();
         if (error && status !== 406) {
           throw error;
         }
         else if (data) {
-          course = data.ID_Cours;
+          track = data.Nom;
           message='';
         }
         else if (!data && status == 406) {
-          message = `The course ${input} seems to not exist.`;
+          message = `The track ${input} seems to not exist.`;
         }
-        courseID.update(() => course)
-        course = 'none'
+        trackID.update(() => track)
+        track = 'none'
       }
       if (!input && user) {
-        course = 'none'
-        courseID.update(() => course)
-        message='Select a course';
+        track = 'none'
+        trackID.update(() => track)
+        message='Select a track';
       }
     } catch (error) {
       console.log(error);
@@ -80,11 +76,11 @@
 </script>
 
 <div class="relative m-6">
-  <input type="text" class="bg-purple-white placeholder-gray-700 text-dark shadow rounded border-2 border-gray-400 p-3 w-full" placeholder="Search course" bind:value="{input}" on:keypress="{(event) => handleEnter(event)}" on:input="{availableTag}">
+  <input type="text" class="bg-purple-white placeholder-gray-700 text-dark shadow rounded border-2 border-gray-400 p-3 w-full" placeholder="Search track" bind:value="{input}" on:keypress="{(event) => handleEnter(event)}" on:input="{availableTag}">
 
   <ul>
     {#each tags as tag, i}
-      <li class="w-full cursor-pointer hover:bg-cyan-600 text-center" on:click="{() => {input = tag.id; search()}}"> 
+      <li class="w-full cursor-pointer hover:bg-cyan-600 text-center" on:click="{() => {input = tag.text; search()}}"> 
         {tag.text}
       </li>
     {/each}
