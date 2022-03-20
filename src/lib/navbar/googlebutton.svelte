@@ -12,13 +12,12 @@
 </script>
 
 <link rel="stylesheet" type="googlebutton.css" href="//fonts.googleapis.com/css?family=Open+Sans" />
-<button class="google-btn" on:click={signInWithGoogle} type="button">
-    <div class="google-icon-wrapper">
-      <img class="google-icon" alt="google icon for sign in with google" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
-    </div>
-    <p class="btn-text"><b>Sign in with google</b></p>
-</button>
-
+  <button class="google-btn" on:click={signInWithGoogle} type="button">
+      <div class="google-icon-wrapper">
+        <img class="google-icon" alt="google icon for sign in with google" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
+      </div>
+      <p class="btn-text"><b>Sign in with google</b></p>
+  </button>
 <style>
 
 
