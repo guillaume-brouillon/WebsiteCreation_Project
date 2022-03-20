@@ -65,10 +65,8 @@
 			if(error) {
 				throw error;
 			} else {
-				window.location.replace('/');
 			}
 		} catch (error) {
-			window.location.replace('/');
 			errormessage = error.message;
 			showerror = true;
 		}
