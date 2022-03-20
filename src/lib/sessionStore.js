@@ -9,6 +9,7 @@ export class selector {
     DesirabilityId = 0;
     StatusId = 0;
     ThisSemester = false;
+    Desirability_compare_type = 2;
     constructor() {
         
     }
@@ -18,15 +19,21 @@ export class selector {
 export let trackID = writable('none');
 
 export let Desirability = [
-    { id: 0, text: "None" },
-    { id: 1, text: "Lowest" },
-    { id: 2, text: "Low" },
-    { id: 3, text: "Normal" },
-    { id: 4, text: "High" },
-    { id: 5, text: "Higher" },
-    { id: 6, text: "Highest" },
-    { id: 7, text: "Must Take" },
-    { id: 8, text: "Mandatory" },
+    { id: 0, text: "Undefined" },
+    { id: 1, text: "None" },
+    { id: 2, text: "Lowest" },
+    { id: 3, text: "Low" },
+    { id: 4, text: "Normal" },
+    { id: 5, text: "High" },
+    { id: 6, text: "Higher" },
+    { id: 7, text: "Highest" },
+    { id: 8, text: "Must Take" },
+    { id: 9, text: "Mandatory" },
+  ];
+  export let compare_type = [
+    { id: 0, text: "<" },
+    { id: 1, text: "=" },
+    { id: 2, text: ">" }
   ];
  export let status = [
     { id: 0, text: "Not Taken" },

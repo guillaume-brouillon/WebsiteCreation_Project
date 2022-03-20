@@ -42,7 +42,7 @@
         try{
                 console.log("trie");
             let user = supabase.auth.user();
-            const { data, error } = await supabase.rpc("get_info_class_tri")
+            const { data, error } = await supabase.rpc("get_info_class_tri", {userid: user.id})
 
             allclasses.set(data);
                 console.log(classes);
@@ -59,7 +59,7 @@
         }
     }
     }
-    import { courseID,selector,allclasses,trackID} from '$lib/sessionStore';
+    import { courseID,selector,allclasses,trackID,Selector} from '$lib/sessionStore';
     let classes = [];
     allclasses.subscribe((value)=>{classes = value;})
     import Search from '$lib/search/Search.svelte';
@@ -69,15 +69,19 @@
     trackID.subscribe(value => {
         trackIdRequested = value;
     });
-	let search = undefined;
-    $: visibleClasses = search ?
+    $: visibleClasses = 
     classes.filter(classe => {
-        console.log("search")
-        console.log(search)
-        console.log("classes")
-        console.log(classes)
-			return classe.ID_Cours.first.match(`${search}.*`) || classe.ID_Cours.last.match(`${search}.*`)
-		}) : classes;
+        var test = classe.ID_Cours.match(`${$Selector.CourseId}.*`);
+        if($Selector.Desirability_compare_type == 0)
+        test = test && classe.Desirability <= $Selector.DesirabilityId
+        else if($Selector.Desirability_compare_type == 1)
+        test = test && classe.Desirability == $Selector.DesirabilityId
+        else if($Selector.Desirability_compare_type == 2)
+        test = test && classe.Desirability >= $Selector.DesirabilityId
+
+        test = test && $Selector.ThisSemester == classe.AddToTrimester;
+			return test;//
+		});
 
 	onMount(async () => {
         await askedCourseTrie();
@@ -85,14 +89,14 @@
    
 
     var targetObj = new selector();
-    var Selector = new Proxy(targetObj, {
+    /*var Selector = new Proxy(targetObj, {
     set: function (target, key, value) {
       console.log(`${key} set to ${value}`);
       target[key] = value;
       return true;
   }
 });
-
+*/
   let open = false;
 </script>
 
@@ -115,7 +119,7 @@
         
 
         <p>UV : </p>
-        <p>{classe.UV}</p>
+        <p>{classe["UV"]}</p>
     </div>
     {#if classe.Abstract != null}
         
@@ -151,4 +155,10 @@ p
     border-width: 1px;
     padding: 0.7rem;
 }
+
+main {
+    padding: 1rem;
+    display: block;
+  }
+
 </style>

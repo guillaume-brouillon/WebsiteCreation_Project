@@ -1,0 +1,21 @@
+
+Drop function get_info_class_tri;
+DROP view my_view;
+
+CREATE OR REPLACE VIEW my_view AS 
+    SELECT "ID_Cours",COALESCE ("Status", 0) as "Status",
+    COALESCE ("Desirability", 0) as "Desirability", "Name_of_Class","Abstract", 
+    "AddToTrimester" From "ClassInformation" full Join "UserClassInfo"
+     on "ClassInformation"."ID_Cours" = "UserClassInfo"."IdClass";
+
+CREATE or replace FUNCTION get_info_class_tri(userid uuid)
+RETURNS SETOF my_view
+AS
+$$
+     SELECT "ID_Cours",COALESCE ("Status", 0) as "Status",
+    COALESCE ("Desirability", 0) as "Desirability", "Name_of_Class","Abstract", 
+    "AddToTrimester" From "ClassInformation" full Join
+    ( SELECT * FROM "UserClassInfo" WHERE "IdUser" = userid) as userinfo
+     on "ClassInformation"."ID_Cours" = userinfo."IdClass"
+$$
+LANGUAGE SQL;

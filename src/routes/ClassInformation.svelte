@@ -168,11 +168,13 @@
               },
             ]);
         }
+        else{
         await supabase
           .from("UserClassInfo")
           .update(kv)
           .match({ IdUser: user.id, IdClass: classIdRequested })
           .single();
+        }
       } catch (error) {
         alert(error.message);
       }
@@ -444,6 +446,7 @@
   .BarAcceptClass {
     margin: auto;
     background-color: var(--bandeau-color);
+    margin: 1rem;
   }
   :global(.togglepaddingFull) {
     padding-right: 120px;
