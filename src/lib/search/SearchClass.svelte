@@ -8,7 +8,7 @@
   
   const ModifyTable = async (kv) => {
   }
-
+let toggled = false;
 </script>
   <div style="background-color: var(--bandeau-color);" class="flex m-auto ">
     <div class="BarAcceptClass flex content-center flex-wrap">
@@ -41,6 +41,7 @@
         light
         titleText="Status"
         bind:selectedId={$Selector.StatusId}
+        on:select={()=>{$Selector.ThisSemester = $Selector.StatusId < 2 ? toggled : false}}
         items={status}
         class="VerticalAligned"
         on:select={ModifyTable({ Status: $Selector.StatusId })}
@@ -52,8 +53,17 @@
             ? 'togglepaddingFull'
             : 'togglepaddingSmall'
           : 'togglepaddingNoToggle'} { $Selector.StatusId < 2 ? 'shown' : 'vishidden'}"
-          toggled={$Selector.ThisSemester}
-        on:toggle={ModifyTable({ AddToTrimester: $Selector.ThisSemester })}
+          bind:toggled
+        on:toggle={()=>
+        {
+            $Selector.ThisSemester = toggled;
+            console.log("toggled")
+            console.debug($Selector.ThisSemester);
+            console.log("__toggled")
+            ModifyTable({ AddToTrimester: $Selector.ThisSemester });
+
+        }
+        }
         labelA="Choose this Trimester"
         labelB="Not choose this Trimester"
       />

@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store';
 
+import { supabase } from "../supabaseClient";
 export const user = writable(false);
 export let courseID = writable('none');
 export let allclasses = writable([]);
@@ -42,3 +43,35 @@ export let Desirability = [
     { id: 3, text: "Failed" },
     { id: 4, text: "Passed" },
   ];
+
+  export   const ModifyTable = async (kv,courseId) => {
+    let user = supabase.auth.user();
+    if (courseId != "none" && user) {
+      try {
+        let { error, status } = await supabase
+          .from("UserClassInfo")
+          .select(`IdClass`)
+          .match({ IdUser: user.id, IdClass: courseId })
+          .single();
+        if (status == 406) {
+          kv.IdClass = courseId
+          kv.IdUser = user.id
+          await supabase
+            .from("UserClassInfo")
+            .insert([
+              kv
+            ]);
+        }
+        else{
+          console.log(kv)
+        await supabase
+          .from("UserClassInfo")
+          .update(kv)
+          .match({ IdUser: user.id, IdClass: courseId })
+          .single();
+        }
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+  };

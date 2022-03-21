@@ -8,7 +8,7 @@
     Toggle,
   } from "carbon-components-svelte";
   import Search from "$lib/search/Search.svelte";
-  import { courseID,Desirability,status } from "$lib/sessionStore";
+  import { courseID,Desirability,status,ModifyTable } from "$lib/sessionStore";
 
   let classIdRequested = courseID;
   let class_info = { Outline: null };
@@ -147,39 +147,7 @@
     getYearsTrimester();
   });
 
-  const ModifyTable = async (kv) => {
-    if (classIdRequested != "none" && user) {
-      try {
-        let { error, status } = await supabase
-          .from("UserClassInfo")
-          .select(`IdClass`)
-          .match({ IdUser: user.id, IdClass: classIdRequested })
-          .single();
-        if (status == 406) {
-          await supabase
-            .from("UserClassInfo")
-            .insert([
-              {
-                IdUser: user.id,
-                IdClass: classIdRequested,
-                Desirability: DesirabilityId,
-                Status: StatusId,
-                AddToTrimester: false,
-              },
-            ]);
-        }
-        else{
-        await supabase
-          .from("UserClassInfo")
-          .update(kv)
-          .match({ IdUser: user.id, IdClass: classIdRequested })
-          .single();
-        }
-      } catch (error) {
-        alert(error.message);
-      }
-    }
-  };
+
 
   const add_teacher = async (event) => {
     event.target.parentElement.parentElement.childNodes.forEach((element) => {
@@ -254,7 +222,7 @@
         bind:selectedId={DesirabilityId}
         items={Desirability}
         class="VerticalAligned"
-        on:select={ModifyTable({ Desirability: DesirabilityId })}
+        on:select={ModifyTable({ Desirability: DesirabilityId,Status: StatusId,AddToTrimester: toggled },classIdRequested)}
       />
 
       <Dropdown
@@ -265,7 +233,7 @@
         bind:selectedId={StatusId}
         items={status}
         class="VerticalAligned"
-        on:select={ModifyTable({ Status: StatusId })}
+        on:select={ModifyTable({ Desirability: DesirabilityId,Status: StatusId,AddToTrimester: toggled },classIdRequested)}
       />
 
       <Toggle
@@ -275,7 +243,7 @@
             : 'togglepaddingSmall'
           : 'togglepaddingNoToggle'} {StatusId < 2 ? 'shown' : 'vishidden'}"
         bind:toggled
-        on:toggle={ModifyTable({ AddToTrimester: toggled })}
+        on:toggle={ModifyTable({ Desirability: DesirabilityId,Status: StatusId,AddToTrimester: toggled },classIdRequested)}
         labelA="Choose this trimester"
         labelB="Not choose this trimester"
       />
