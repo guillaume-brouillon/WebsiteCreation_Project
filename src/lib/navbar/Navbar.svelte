@@ -48,34 +48,31 @@
     let website = "";
     let avatar_url = "";
     async function createProfile() {
-    try {
-      const user = supabase.auth.user()
+        try {
+        const user = supabase.auth.user()
 
-      const updates = {
-        id: user.id,
-        username,
-        website,
-        avatar_url,
-        updated_at: new Date(),
-      }
+        const updates = {
+            id: user.id,
+            username,
+            website,
+            avatar_url,
+            updated_at: new Date(),
+        }
 
-      let { error } = await supabase.from('profiles').insert(updates)
+        let { error } = await supabase.from('profiles').insert(updates)
 
-      if (error) throw error
-    } catch (error) {
-      console.log(error.message)
+        if (error) throw error
+        } catch (error) {
+        console.log(error.message)
+        }
     }
-  }
     const handleSignUp = async (event) => {
         try {
             const { user, session, error } = await supabase.auth.signUp({
                 email: mail,
                 password: pwd,
-            });
-            
-            logedin = true
+            });  
             createProfile();
-            console.log(user, session);
             setFormMessage(event, "success", "You are connected");
             if (error) {
                 throw error;
