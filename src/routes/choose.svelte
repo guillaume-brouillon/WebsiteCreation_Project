@@ -128,7 +128,7 @@
     <Header />
 </header>
 <main>
-    <Search />
+    <input type="text" class="bg-purple-white placeholder-gray-700 text-dark shadow rounded border-2 border-gray-400 p-3 w-full mb-4"  bind:value={$Selector.CourseId}/>
     <SearchClass />
     {#each visibleClasses as classe}
         <div class="listviewitem">
@@ -170,7 +170,7 @@
                                     on:click={() => {
                                         classe.chosencnr = cr;
                                         ModifyTable(
-                                            { ChosenCNR: cr["CNR"] },
+                                            { ChosenCNR: cr["CNR"],Année: cr.Année, Trimestre: cr.Trimestre },
                                             classe.ID_Cours
                                         );
                                         classe.takeclass_text = "Remove Class";

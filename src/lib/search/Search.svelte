@@ -2,7 +2,8 @@
   import { supabase } from "../../supabaseClient";
   import { courseID } from '$lib/sessionStore.js'
 
-  let input;
+  export let input;
+  export let searchable = trie;
   let course = 'none';
   let message = '';
 
@@ -43,6 +44,8 @@
   }
 
   const search = async () => {
+    if(searchable){
+      
     try {
       tags=[];
       let user = supabase.auth.user();
@@ -68,6 +71,7 @@
       }
     } catch (error) {
       console.log(error);
+    }
     }
   }
 

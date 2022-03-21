@@ -15,8 +15,8 @@
   let teachers = [{ Professeur: "none" }];
   let profs = [{ Professeur: "none" }];
   let crenaux_lists = null;
-  let years = [{id: 0, text:'None'}];
-  let trimesters = [{id: 0, text:'None'}];
+  let years = [{id: 0, text:'none'}];
+  let trimesters = [{id: 0, text:'none'}];
 
   let property_name = [
     "Abstract",
@@ -30,7 +30,6 @@
   let open = false;
   let toggled = false;
 
-  
 
   const user = supabase.auth.user();
   let DesirabilityId = 0;
@@ -138,13 +137,17 @@
       }
   };
 
-  courseID.subscribe(value => {
-    classIdRequested = value;
-    getClassInfo();
+  const updateDataUI  = () => {  
+   getClassInfo();
     getClassInfoUser();
     getTrackInfo();
     getTeacherInfo();
     getYearsTrimester();
+  }
+  updateDataUI();
+  courseID.subscribe(value => {
+    classIdRequested = value;
+    updateDataUI();
   });
 
 
@@ -183,14 +186,7 @@
     }
   };
 
-  const updateDataUI  = () => {  
-   getClassInfo();
-    getClassInfoUser();
-    getTrackInfo();
-    getTeacherInfo();
-    getYearsTrimester();
-  }
-  updateDataUI();
+  
 
   const find_track = (track) => {
     trackID.update(() => track);
@@ -200,13 +196,13 @@
 <script context="module">
   import { supabase } from "../supabaseClient";
   let user = supabase.auth.user();
-
+/*
   export async function load() {
     if (user == null) {
       return {status: 302, redirect: "/"};
     }
     return {}
-  };
+  };*/
 </script>
 
 <Header />
@@ -370,6 +366,7 @@
     </div>
   </div>
 
+  {#if TrimesterId != 0 && YearId != 0}
   <div class="containerClass bg-transparent" style="background-color: transparent;">
     {#if crenaux_lists != null}
       <p>Dates</p>
@@ -387,6 +384,7 @@
       </div>
     {/if}
   </div>
+  {/if}
   </div>
   {/if}
 </main>
