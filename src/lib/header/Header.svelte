@@ -25,11 +25,11 @@
 	})();
 
 	function computer_panel() {
-		jQuery("li:not(.active)").css("display", "inline");
+		jQuery("#navigationlinks li:not(.active)").css("display", "inline");
 		jQuery("#navigationlinks").css("display", "flex");
 	}
 	function mobile_panel() {
-		jQuery("li:not(.active)").css("display", "none");
+		jQuery("#navigationlinks li:not(.active)").css("display", "none");
 		jQuery("#navigationlinks").css("display", "block");
 		navigation_open = false;
 	}
@@ -48,10 +48,10 @@
 
 	function reveal_nav_pannel() {
 		if (!navigation_open) {
-			jQuery("li:not(.active)").css("display", "block");
+			jQuery("#navigationlinks li:not(.active)").css("display", "block");
 			jQuery("#navigationlinks").css("display", "block");
 		} else {
-			jQuery("li:not(.active)").css("display", "none");
+			jQuery("#navigationlinks li:not(.active)").css("display", "none");
 			jQuery("#navigationlinks").css("display", "flex");
 		}
 
@@ -100,9 +100,9 @@
 
 		<div id="LogoContainer" class="w-500">
 			<img id="logo" class="h-auto" src={logo} alt="Logo Essec" />
-			<h1 class="h-auto">My Classes</h1>
+			<h1 class="h-auto" id="MyClasses">My Classes</h1>
 		</div>
-		<ul id="navigationlinks">
+		<ul id="navigationlinks" class="z-50">
 			<li class:active={$page.url.pathname === "/summary" || $page.url.pathname === "/" }>
 				<a sveltekit:prefetch href="/summary">My Summary</a>
 				<a sveltekit:prefetch href="/choose" class="filler"
@@ -194,7 +194,7 @@ text-transform: uppercase;
 		#logo {
 			display: none;
 		}
-		h1 {
+		h1#MyClasses {
 			display: none;
 		}
 		
@@ -221,7 +221,7 @@ text-transform: uppercase;
 	}
 	
 	@media (max-width: 600px) {
-		li:not(.active) {
+		#navigationlinks li:not(.active) {
 			display: none;
 		}
 		.filler {
