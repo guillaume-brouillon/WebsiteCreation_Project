@@ -3,7 +3,7 @@
   import { courseID } from '$lib/sessionStore.js'
 
   export let input;
-  export let searchable = trie;
+  export let searchable = true;
   let course = 'none';
   let message = '';
 

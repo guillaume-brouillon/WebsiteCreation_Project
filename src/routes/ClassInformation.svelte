@@ -209,8 +209,7 @@
 <div>
   <Search />
 </div>
-
-<main style="display : {classIdRequested === 'none' ? 'none' : 'block'}" class="w-full">
+<main  class="w-full">
 
   <div style="background-color: var(--bandeau-color);" class="flex m-auto ">
     <div class="BarAcceptClass flex content-center flex-wrap">
@@ -388,7 +387,6 @@
   </div>
   {/if}
 </main>
-
 <style>
   * {
     font-family: "Lora", serif;

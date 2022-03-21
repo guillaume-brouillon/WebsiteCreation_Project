@@ -192,11 +192,12 @@
                 <img src="../../../static/icon/edu.png" alt="logo" />
             </a>
             <div class="navbar-items items">
+                <!--
                 <p><a href="#item1">Home</a></p>
                 <p><a href="#item2">What is it?</a></p>
                 <p><a href="#item3">courses</a></p>
                 <p><a href="#item4">Websites</a></p>
-                <p><a href="#item5">Contact us</a></p>
+                <p><a href="#item5">Contact us</a></p>-->
             </div>
         </div>
         <div class="navbar-sign">

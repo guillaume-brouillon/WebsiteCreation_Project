@@ -28,7 +28,7 @@
     import { onMount } from "svelte";
 
     const askedCourseTrie = async () => {
-        if (classes.length == 0) {
+        if (classes.length == 0 || true) {
             try {
                 let user = supabase.auth.user();
                 const { data, error } = await supabase.rpc(

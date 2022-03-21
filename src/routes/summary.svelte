@@ -124,7 +124,7 @@
 
 <main>
   <p use:getProfile class="m-10 font-extralight text-2xl">
-    {username}
+    {username == undefined ? "" : username}
   </p>
   <div use:getSummary>
     <Accordion>
