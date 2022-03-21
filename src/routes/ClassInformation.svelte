@@ -8,7 +8,7 @@
     Toggle,
   } from "carbon-components-svelte";
   import Search from "$lib/search/Search.svelte";
-  import { courseID,Desirability,status } from "$lib/sessionStore";
+  import { trackID,courseID,Desirability,status } from "$lib/sessionStore";
 
   let classIdRequested = courseID;
   let class_info = { Outline: null };
@@ -138,6 +138,7 @@
         }
       }
   };
+
   courseID.subscribe(value => {
     classIdRequested = value;
     getClassInfo();
@@ -216,13 +217,17 @@
   };
 
   const updateDataUI  = () => {  
-  getClassInfo();
+   getClassInfo();
     getClassInfoUser();
     getTrackInfo();
     getTeacherInfo();
     getYearsTrimester();
-}
+  }
   updateDataUI();
+
+  const find_track = (track) => {
+    trackID.update(() => track);
+  };
 </script>
 
 <script context="module">
@@ -332,7 +337,9 @@
     >
       <p>Tracks</p>
       {#each tracks as track}
-        <Tag>{track.filliere}</Tag>
+        <a on:click={() => find_track(track.filliere) } href="/exploretracks" class="cursor-pointer no-underline">
+          <Tag>{track.filliere}</Tag>
+        </a>
       {/each}
     </div>
   {/if}
